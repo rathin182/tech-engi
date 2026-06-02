@@ -106,6 +106,7 @@ export default function RoleDashboard({ role }: { role: "ENGINEER" | "ADMIN" | "
     };
   }, []);
 
+// console.log(data,"userss");
 
   // ACTION HANDLERS
   const handleDelete = async () => {
@@ -218,38 +219,10 @@ export default function RoleDashboard({ role }: { role: "ENGINEER" | "ADMIN" | "
             {/* INLINE STATUS & ACTIONS FOR ENGINEERS */}
             {(role === "ENGINEER") && (
               <div style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={s.badge(u.status === "PENDING" ? "#f59e0b" : u.status === "REJECTED" ? "#ef4444" : "#FFAE58", "#f4f4f4")}>
+                <span style={s.badge(u.status === "PENDING" ? "#f59e0b" : u.status === "REJECTED" ? "#ef4444" : "#22C55E", "#f4f4f4")}>
                   {/* {u.status || "APPROVED"} */}
                   {u.status}
                 </span>
-
-                {/* Pending Actions - ADDED e.stopPropagation() */}
-                {u.status === "PENDING" && (
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("APPROVED"); }}
-                      style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: 6, cursor: "pointer" }}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("REJECTED"); }}
-                      style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#fee2e2", color: "#ef4444", border: "1px solid #fecaca", borderRadius: 6, cursor: "pointer" }}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
-
-                {/* Rejected Actions - ADDED e.stopPropagation() */}
-                {u.status === "REJECTED" && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("APPROVED"); }}
-                    style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: 6, cursor: "pointer" }}
-                  >
-                    Approve
-                  </button>
-                )}
               </div>
             )}
 
@@ -273,6 +246,36 @@ export default function RoleDashboard({ role }: { role: "ENGINEER" | "ADMIN" | "
             {role === "CLIENT" && <><strong>Expertise:</strong> {u.expertise?.length ? u.expertise.join(", ") : "Not provided"}</>}
             {role === "ADMIN" && "Platform Administrator"}
           </p>
+        </div>
+
+        <div className="mt-3" style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          {/* Pending Actions - ADDED e.stopPropagation() */}
+          {u.status === "PENDING" && (
+            <div style={{ display: "flex", gap: 6 }}>
+              <button
+                onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("APPROVED"); }}
+                style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: 6, cursor: "pointer" }}
+              >
+                Approve
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("REJECTED"); }}
+                style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#fee2e2", color: "#ef4444", border: "1px solid #fecaca", borderRadius: 6, cursor: "pointer" }}
+              >
+                Reject
+              </button>
+            </div>
+          )}
+
+          {/* Rejected Actions - ADDED e.stopPropagation() */}
+          {u.status === "REJECTED" && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setStatusModalUser(u); setTargetStatus("APPROVED"); }}
+              style={{ padding: "2px 8px", fontSize: 11, fontWeight: 600, background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: 6, cursor: "pointer" }}
+            >
+              Approve
+            </button>
+          )}
         </div>
       </div>
     );

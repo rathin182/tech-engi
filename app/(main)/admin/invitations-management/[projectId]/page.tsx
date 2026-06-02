@@ -349,6 +349,12 @@ export default function ProjectDetailsPage() {
         // ALL_USERS -> WAITING
         // ALL_USERS -> APPROVED
         // ALL_USERS -> REJECTED
+        // APPROVED already has someone
+        // console.log(getInvitationsByStatus, "getInvitationsByStatus", getInvitationsByStatus("APPROVED"), "approved invitations");
+        if (newColumn === "APPROVED" && getInvitationsByStatus("APPROVED").length > 0) {
+          setDraggedItem(null);
+          return;
+        }
 
         if (
           newColumn === "ALL_USERS"
@@ -1524,7 +1530,7 @@ export default function ProjectDetailsPage() {
               </button>
 
               <button
-                 onClick={() => {setShowFilters(false);}}
+                onClick={() => { setShowFilters(false); }}
                 className=" px-4 py-2 bg-cyan-500 text-white rounded-lg">
                 Apply
               </button>
