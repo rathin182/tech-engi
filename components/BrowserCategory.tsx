@@ -333,7 +333,7 @@ const BrowserCategory = () => {
         </p>
 
         {/* DESCRIPTION 2 */}
-        <p
+        {/* <p
           className="
             text-[14px]
             sm:text-[15px]
@@ -349,7 +349,7 @@ const BrowserCategory = () => {
           "
         >
           {selectedCategory.description2}
-        </p>
+        </p> */}
       </div>
     </div>
   </div>
