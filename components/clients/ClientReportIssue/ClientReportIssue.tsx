@@ -48,10 +48,6 @@ const ClientReportIssue = () => {
             setFetchTicket(true);
             const res = await fetch(`/api/tickets?projectId=${selectedProjectId}`);
             const data = await res.json();
-<<<<<<< HEAD
-            console.log(data, "datataa");
-=======
->>>>>>> 13e2b18 (doing more changes)
             if (!res.ok || !data.success) {
                 throw new Error(data.message || "Failed to fetch tickets");
             }
@@ -95,10 +91,6 @@ const ClientReportIssue = () => {
                 setLoading(true);
                 const res = await fetch("/api/client/projects");
                 const data = await res.json();
-<<<<<<< HEAD
-                console.log(data, "datataa");
-=======
->>>>>>> 13e2b18 (doing more changes)
 
                 if (data.success) {
                     setProjects(data.projects);

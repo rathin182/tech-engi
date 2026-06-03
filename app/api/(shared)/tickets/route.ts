@@ -59,9 +59,6 @@ export async function GET(req: NextRequest) {
     });
     
 
-    console.log(tickets, "ticketss");
-    
-
     return NextResponse.json({ success: true, tickets }, { status: 200 });
   } catch {
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });

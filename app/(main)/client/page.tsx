@@ -217,12 +217,8 @@ const ClientAnalyticsDashboard = () => {
       </div>
 
       <ClientOverview data={projectAnalytics?.overview} />
-<<<<<<< HEAD
-      <DesignOverview />
-=======
-      <DesignOverview data={projectAnalytics?.projects} />
->>>>>>> 13e2b18 (doing more changes)
-      {/* data={projectAnalytics?.design} */}
+      <DesignOverview data={projectAnalytics?.projects}  />
+{/* data={projectAnalytics?.design} */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <LatestUpdates />
