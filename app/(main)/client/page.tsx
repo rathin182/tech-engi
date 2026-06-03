@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { Loader, AlertCircle, Filter, Search, Calendar } from 'lucide-react';
+import { Loader, AlertCircle, Filter, Search, Calendar, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ClientOverview from '@/components/clients/analytics/ClientOverview';
 import DesignOverview from '@/components/clients/analytics/DesignOverview';
@@ -10,6 +10,7 @@ import RiskBlockage from '@/components/clients/analytics/RiskBlockage';
 import Milestones from '@/components/clients/analytics/Milestones';
 import BudgetAndDocs from '@/components/clients/analytics/BudgetAndDocs';
 import DesignPreviewSection from '@/components/clients/analytics/DesignPreviewSection';
+import { CreateProjectModal } from '@/components/project/CreateProjectModal';
 
 interface Project {
   id: string;
@@ -28,9 +29,9 @@ interface User {
 }
 
 const PRIORITY_COLOR: Record<string, string> = {
-  HIGH:   'bg-red-500/20 text-red-500 border-red-200 dark:border-red-800',
+  HIGH: 'bg-red-500/20 text-red-500 border-red-200 dark:border-red-800',
   MEDIUM: 'bg-yellow-500/20 text-yellow-500 border-yellow-200 dark:border-yellow-800',
-  LOW:    'bg-green-500/20 text-green-500 border-green-200 dark:border-green-800',
+  LOW: 'bg-green-500/20 text-green-500 border-green-200 dark:border-green-800',
 };
 
 const ClientAnalyticsDashboard = () => {
@@ -46,6 +47,7 @@ const ClientAnalyticsDashboard = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [showProjects, setShowProjects] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchTerm), 500);
@@ -55,10 +57,10 @@ const ClientAnalyticsDashboard = () => {
   useEffect(() => {
     if (!user?.id) return;
     setLoading(true);
-    
+
     // Call the single master endpoint
-    const url = projectId && !showProjects 
-      ? `/api/client/analytics?projectId=${projectId}` 
+    const url = projectId && !showProjects
+      ? `/api/client/analytics?projectId=${projectId}`
       : `/api/client/analytics?search=${debouncedSearch}`;
 
     fetch(url)
@@ -66,24 +68,25 @@ const ClientAnalyticsDashboard = () => {
       .then(res => {
         if (res.success) {
           if (projectId && !showProjects) {
+            console.log(res.data?.projects, "res.data?.projects", res.data);
             
             setProjectAnalytics(res.data);
           } else {
             setProjectsList(res.projects || []);
             const urlId = new URLSearchParams(window.location.search).get('projectId');
             if (urlId && res.projects?.some((p: any) => p.id === urlId)) {
-                setProjectId(urlId);
-                setShowProjects(false);
+              setProjectId(urlId);
+              setShowProjects(false);
             }
           }
         } else {
-            setError(res.message || "Failed to load");
+          setError(res.message || "Failed to load");
         }
       })
       .catch(err => {
         setError(err instanceof Error ? err.message : 'Failed to fetch');
         setShowProjects(true);
-      }) 
+      })
       .finally(() => setLoading(false));
   }, [debouncedSearch, projectId, showProjects, user?.id]);
 
@@ -115,12 +118,15 @@ const ClientAnalyticsDashboard = () => {
     </div>
   );
 
+  console.log(projectAnalytics, "projectAnalytics");
+  
+
   // Projects List
   if (!projectId || showProjects) return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Projects</h1>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">My Projects</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Select a project to view analytics</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -143,6 +149,11 @@ const ClientAnalyticsDashboard = () => {
               <option value="MEDIUM">Medium Priority</option>
               <option value="LOW">Low Priority</option>
             </select>
+          </div>
+          <div>
+            <button onClick={() => setShowCreate(true)} className="px-4 py-2 text-white rounded-lg flex items-center gap-2  text-sm font-semibold hover:bg-[#e89b45] transition-colors" style={{ background: "var(--primary)" }}>
+              <Plus size={15} /> New Project
+            </button>
           </div>
         </div>
       </div>
@@ -187,6 +198,8 @@ const ClientAnalyticsDashboard = () => {
           ))}
         </div>
       )}
+
+      {showCreate && <CreateProjectModal onClose={() => setShowCreate(false)} onCreated={() => setShowProjects(false)} user={user} />}
     </div>
   );
 
@@ -204,11 +217,11 @@ const ClientAnalyticsDashboard = () => {
       </div>
 
       <ClientOverview data={projectAnalytics?.overview} />
-      <DesignOverview  />
-{/* data={projectAnalytics?.design} */}
+      <DesignOverview />
+      {/* data={projectAnalytics?.design} */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <LatestUpdates  />
+          <LatestUpdates />
           {/* updates={projectAnalytics?.updates} */}
         </div>
         <div className="lg:col-span-1 space-y-3">

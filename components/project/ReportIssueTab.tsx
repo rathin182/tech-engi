@@ -288,7 +288,7 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
           <AlertCircle size={22} /> Report an Issue
         </h2>
         <div className="flex gap-2">
-          {(isAdmin || isEngineer) && (
+          {(isAdmin || isEngineer || isClient) && (
             <>
               {/* <button onClick={() => setShowClientIssueModal(true)} className="px-4 py-2 text-white rounded-lg flex items-center gap-2  text-sm bg-red-500 hover:bg-red-600">
                 <Shield size={14} /> Client Issue

@@ -4,26 +4,26 @@ import { useScrollAnimation } from '@/lib/useScrollAnimation'
 
 const WhatWeOffer = () => {
   const engineersOffers = [
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur. Praesent dolor habitasse massa volutpat at massa condimentum. Tempus interdum ornare diam nulla at nam velit. A interdum.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur. Pellentesque tortor eu diam pharetra at. Risus id semper vitae mauris aliquet. Id sed.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur."
+    "Find High-Quality Engineering Projects.",
+    "Build Your Professional Portfolio.",
+    "Work With Verified Clients.",
+    "Flexible Remote Opportunities.",
+    "Earn Through Technical Expertise.",
+    "Collaborate With Engineering Teams.",
+    "Gain Real Industry Experience.",
+    "Expand Your Professional Network.",
+    "Showcase Innovative Solutions."
   ]
 
   const clientsOffers = [
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur. Praesent dolor habitasse massa volutpat at massa condimentum. Tempus interdum ornare diam nulla at nam velit. A interdum.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur. Pellentesque tortor eu diam pharetra at. Risus id semper vitae mauris aliquet. Id sed.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur.",
-    "Lorem ipsum dolor sit amet consectetur."
+    "Access Verified Engineering Talent.",
+    "Hire Experts Across Multiple Domains.",
+    "Faster Project Delivery.",
+    "Affordable Engineering ServicesEnd-to-End Product Development.",
+    "Technical Consulting Support.",
+    "Prototype & MVP Development.",
+    "Dedicated Project Management.",
+    "Scalable Engineering Solutions.",
   ]
 
   const titleRef = useScrollAnimation('fadeUp')
@@ -80,26 +80,7 @@ const WhatWeOffer = () => {
             {/* VERTICAL LABEL */}
             <div className="flex items-stretch shrink-0 pr-3 sm:pr-4">
               <p
-                className="
-          text-[#6F6F6F]
-          font-medium
-
-          text-[20px]
-          sm:text-[26px]
-          lg:text-[34px]
-
-          border
-          border-slate-300
-
-          py-4
-          sm:py-5
-
-          px-2
-
-          flex
-          items-center
-          justify-center
-        "
+                className=" text-[#6F6F6F] font text-[20px] sm:text-[26px] lg:text-[34px] border border-slate-300 py-4 sm:py-5 px-2 flex items-center justify-center"
                 style={{
                   writingMode: "vertical-rl",
                   transform: "rotate(180deg)",
@@ -114,10 +95,8 @@ const WhatWeOffer = () => {
               className="
         border
         border-slate-300
-
         p-5
         sm:p-8
-
         w-full
       "
             >

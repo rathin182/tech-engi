@@ -6,25 +6,25 @@ import { useScrollAnimation } from "@/lib/useScrollAnimation";
 
 const faqs = [
   {
-    question: "How is Uvodo different from other eCommerce platforms?",
-    answer: null,
+    question: "How does Tech-ENGI connect clients with engineers?",
+    answer: "Clients submit project requirements, and Tech-ENGI matches them with verified engineers based on expertise, budget, and timeline for seamless collaboration and successful project delivery.",
   },
   {
-    question: "Can I use my own domain with Uvodo?",
+    question: "Can students get help with final year engineering projects?",
     answer:
-      "Yes, you can connect your existing domain. Uvodo also provides a forever free uvo.do domain suffix to all sellers upon creating an account.",
+      "Yes, students can get expert guidance for project planning, development, testing, documentation, and implementation across various engineering domains.",
   },
   {
-    question: "Can I sell my products with Uvodo without creating an online store?",
-    answer: null,
+    question: "What engineering domains are available on Tech-ENGI?",
+    answer: "Tech-ENGI supports Robotics, Embedded Systems, IoT, AI/ML, Software Development, Electronics, Automation, PCB Design, Firmware Development, and Product Prototyping.",
   },
   {
-    question: "Is there a setup fee for using Uvodo?",
-    answer: null,
+    question: "How long does project delivery usually take?",
+    answer: "Delivery depends on project complexity. Small projects may take days, while larger development projects can take weeks with regular progress updates.",
   },
   {
-    question: "In what countries can I use Uvodo?",
-    answer: null,
+    question: "Can startups hire engineers for product development?",
+    answer: "Yes, startups can hire engineers for MVP development, prototyping, product design, software development, testing, and scaling innovative products",
   },
 ];
 

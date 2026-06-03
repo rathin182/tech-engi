@@ -25,6 +25,8 @@ export async function GET(req: NextRequest) {
           tickets: { orderBy: { createdAt: "desc" } },
           transactions: { where: { status: "SUCCESS" } },
           resources: { where: { type: "FILE" } },
+          projectTasks : true,
+          kanbanTasks: true,
         }
       });
 
@@ -49,6 +51,7 @@ export async function GET(req: NextRequest) {
             overallProgress: project.progress,
             daysRemaining: project.endDate ? Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) : 0
           },
+          projects: [project],
           design: project.designSystem,
           updates: project.latestUpdates,
           milestones: project.milestones,
@@ -71,6 +74,10 @@ export async function GET(req: NextRequest) {
       where: { 
         clientId,
         title: { contains: search, mode: "insensitive" }
+      },
+      include: {
+        projectTasks: true,
+        designSystem: true,
       },
       orderBy: { updatedAt: "desc" }
     });

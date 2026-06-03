@@ -14,7 +14,7 @@ export async function GET() {
     const userData = await prisma.user.findUnique({
       where: { id: user.id },
       include: {
-        clientProfile: { include: { projects: { select: { id: true } } } },
+        clientProfile: { include: { projects:true } },
         transactions: {
           where: {
             status: "SUCCESS",

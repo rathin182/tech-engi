@@ -9,43 +9,33 @@ gsap.registerPlugin(ScrollTrigger);
 const categories = [
   {
     title: "Robotics",
-    image: "/robotics.jpg",
+    image: "/robotics2.png",
     description1:
-      "Advanced robotics projects including automation systems, robotic arms, industrial robots, and intelligent control systems.",
-    description2:
-      "Build modern robotics solutions with AI integration, sensors, motion systems, and embedded hardware platforms.",
+      "Robotics design, automation systems, robotic arm development, ROS integration, and autonomous solutions.",
   },
   {
     title: "Embedded System",
-    image: "/embedded-system.jpg",
+    image: "/embeddedsyatem2.jpg",
     description1:
-      "Embedded system development using microcontrollers, RTOS, firmware engineering, and hardware integration.",
-    description2:
-      "Design scalable embedded architectures for IoT devices, automotive systems, and industrial electronics.",
+      "Embedded firmware development, microcontroller programming, RTOS solutions, PCB integration, and hardware prototyping.",
   },
   {
     title: "IoT",
-    image: "/iot.jpg",
+    image: "/iot2.png",
     description1:
-      "IoT solutions with cloud connectivity, smart devices, sensor networks, and real-time monitoring systems.",
-    description2:
-      "Develop smart ecosystems connecting devices, APIs, dashboards, and edge computing infrastructures.",
+      "IoT device development, cloud connectivity, sensor integration, smart automation, and real-time monitoring systems.",
   },
   {
     title: "AI / ML Projects",
-    image: "/ai-ml.jpg",
+    image: "/aiml2.png",
     description1:
-      "Artificial Intelligence and Machine Learning systems including NLP, computer vision, and predictive analytics.",
-    description2:
-      "Train intelligent models using modern frameworks and deploy scalable AI-powered applications.",
+      "Machine learning models, computer vision, predictive analytics, NLP applications, and AI-powered automation.",
   },
   {
     title: "Software Projects",
-    image: "/software.jpg",
+    image: "/software2.png",
     description1:
-      "Full-stack software development projects covering web apps, SaaS platforms, APIs, and enterprise systems.",
-    description2:
-      "Build scalable modern applications using advanced frontend, backend, and cloud technologies.",
+      "Web applications, mobile apps, SaaS platforms, APIs, enterprise software, and full-stack development.",
   },
 ];
 

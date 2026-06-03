@@ -7,18 +7,18 @@ const HowItWorks = () => {
     const steps = [
         {
             icon: Briefcase,
-            title: "Post a Job",
-            description: "Describe your robotics or tech project with requirements, timeline, and budget."
+            title: "Post Your Project",
+            description: "Share your engineering project requirements, budget, timeline, and technical specifications."
         },
         {
             icon: Users,
-            title: "Get the Match",
-            description: "Describe your robotics or tech project with requirements, timeline, and budget."
+            title: "Get Matched With Experts",
+            description: "Connect with verified engineers specializing in Robotics, IoT, AI/ML, Embedded Systems, and Software Development."
         },
         {
             icon: Rocket,
             title: "Collaborate & Deliver",
-            description: "Describe your robotics or tech project with requirements, timeline, and budget."
+            description: "Work directly with engineers, track progress, and receive your completed project on time."
         }
     ]
 

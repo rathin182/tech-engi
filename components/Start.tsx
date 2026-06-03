@@ -78,15 +78,7 @@ const Start = () => {
 
           {/* DESKTOP RIGHT */}
           <div
-            className="
-            hidden
-            lg:flex
-            items-center
-            gap-5
-
-            border-l-2
-            border-gray-300
-            pl-5
+            className=" hidden lg:flex items-center gap-5 border-l-2 border-gray-300 pl-5
           "
           >
             {/* SOCIAL */}
@@ -158,7 +150,7 @@ const Start = () => {
 
             {/* BUTTONS */}
             <div className="flex items-center gap-3">
-              <Link
+              {/* <Link
                 href="/login"
                 className="
                 inline-flex
@@ -180,30 +172,12 @@ const Start = () => {
               "
               >
                 BECOME BUILDER
-              </Link>
+              </Link> */}
 
               <Link
                 href="/login"
-                className="
-                inline-flex
-                items-center
-                justify-center
-                gap-2
-
-                px-4
-                py-1
-
-                text-[16px]
-
-                font-inter
-                bg-black
-                text-white
-                hover:bg-gray-800
-
-                whitespace-nowrap
-              "
-              >
-                GOT A PROJECT
+                className=" inline-flex items-center justify-center gap-2 w-50 px-4 py-1 text-[16px] font-inter bg-black text-white hover:bg-gray-800 whitespace-nowrap">
+                Login
                 <span className="text-base">↗</span>
               </Link>
             </div>
@@ -212,13 +186,7 @@ const Start = () => {
           {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="
-            lg:hidden
-            flex
-            items-center
-            justify-center
-          "
-          >
+            className=" lg:hidden flex items-center justify-center">
             {mobileMenuOpen ? (
               <X className="w-7 h-7 text-black" />
             ) : (
@@ -229,11 +197,7 @@ const Start = () => {
 
         {/* MOBILE MENU */}
         <div
-          className={`
-          lg:hidden
-          overflow-hidden
-          transition-all
-          duration-300
+          className={`lg:hidden overflow-hidden transition-all duration-300
 
           ${mobileMenuOpen
               ? "max-h-[500px] border-t border-gray-200"
@@ -360,9 +324,11 @@ const Start = () => {
           {/* Left */}
           <div className="flex-1">
             <div ref={taglineRef} className="flex items-center gap-2 mb-4 font-id text-[#FFAE58]">
-              <span className="text-[16px] uppercase">STRESS LESS</span>
+              <span className="text-[16px] uppercase">Engineering Projects</span>
               <span className="">|</span>
-              <span className="text-[16px] uppercase">TIMELY DELIVERY</span>
+              <span className="text-[16px] uppercase">Expert Engineers</span>
+              <span className="">|</span>
+               <span className="text-[16px] uppercase">On-Time Delivery</span>
             </div>
             <h1
               ref={headlineRef}
@@ -376,7 +342,7 @@ const Start = () => {
           {/* Right */}
           <div ref={rightRef} className="flex flex-col items-start lg:items-end justify-between gap-6 lg:pt-2 w-full lg:max-w-[41%] text-left lg:text-right">
             <p className="text-[18px] sm:text-[22px] lg:text-[26px] font-medium font-id text-black">
-              Tech-ENGI connects students with skilled builders who turns your ideas, assignments and projects into ready-to-submit work fast!
+              Tech-ENGI connects students, startups, and businesses with verified engineering experts for projects, prototyping, product development, and consulting.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center font-inter gap-3 w-full sm:w-auto">
               <Link href={'register/engineer'} className="px-6 py-4 text-[16px] font-bold text-gray-900 bg-[#F4F4F4] whitespace-nowrap text-center">

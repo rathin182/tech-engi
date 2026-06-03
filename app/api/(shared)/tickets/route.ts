@@ -50,13 +50,16 @@ export async function GET(req: NextRequest) {
     }
 
     const tickets = await prisma.ticket.findMany({
-      where: whereClause,
+      where: { projectId: projectId },
       orderBy: { createdAt: "desc" },
       include: {
         project: { select: { title: true } },
         raisedBy: { select: { name: true, image: true, role: true } }
       }
     });
+
+    console.log(tickets, "ticketss");
+    
 
     return NextResponse.json({ success: true, tickets }, { status: 200 });
   } catch {

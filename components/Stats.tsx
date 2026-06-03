@@ -5,12 +5,12 @@ import { useScrollAnimation } from '@/lib/useScrollAnimation'
 import Image from 'next/image';
 
 const stats = [
-  { value: '10K+', label: 'Project Delivered on Time' },
-  { value: '1.2K+', label: 'Engineers onboard' },
-  { value: '95%', label: 'Clients satisfaction' },
-  { value: '10K+', label: 'Project Delivered on Time' },
-  { value: '1.2K+', label: 'Engineers onboard' },
-  { value: '95%', label: 'Clients satisfaction' },
+  { value: '10,000+', label: 'Projects Successfully Delivered' },
+  { value: '1,200+', label: 'Verified Engineers Onboarded' },
+  { value: '95%', label: 'Client Satisfaction Rate' },
+  { value: '500+', label: 'Startup Projects Supported' },
+  { value: '50+', label: 'Engineering Domains Covered' },
+  { value: '24/7', label: 'Project Assistance Available' },
 ]
 
 const companyIcons = [

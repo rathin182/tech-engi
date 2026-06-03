@@ -96,19 +96,14 @@ const RiskBlockage = ({ tickets = [] }: { tickets: any[] }) => {
       </div>
 
       {/* Tickets */}
-      <div className="space-y-2 mt-0 overflow-y-auto h-50 pr-1 no-scrollbar">
-
+      <div className="space-y-2 mt-0 overflow-y-auto h-60 pr-1 no-scrollbar">
         {tickets.map((ticket) => (
           <div
             key={ticket.id}
             className="bg-white rounded-[18px] p-5 border border-[#ececec] shadow-[0_4px_18px_rgba(0,0,0,0.05)]"
           >
-
-            {/* Top */}
             <div className="flex items-center justify-between mb-3">
-
               <div className="flex items-center gap-3">
-
                 <div className="w-9 h-9 rounded-full bg-[#fff4d6] flex items-center justify-center">
                   <AlertTriangle className="w-5 h-5 text-[#f5a300]" />
                 </div>
@@ -116,18 +111,15 @@ const RiskBlockage = ({ tickets = [] }: { tickets: any[] }) => {
                 <span className="text-[20px] font-semibold text-black font-id">
                   {ticket.issueType}
                 </span>
-
               </div>
-
             </div>
-
           </div>
         ))}
-
       </div>
 
       {/* Bottom Fade */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#fff7f7] to-transparent" />
+      <div
+  className=" pointer-events-none absolute bottom-2 left-2 right-2 h-10 rounded-b-2xl bg-gradient-to-t from-white to-transparent"/>
 
     </div>
   );

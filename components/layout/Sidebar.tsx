@@ -34,7 +34,8 @@ const ADMIN_NAV: NavItem[] = [
 const CLIENT_NAV: NavItem[] = [
   { label: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/client" },
   { label: "Message", icon: <MessageSquare size={20} />, href: "/client/message" },
-  { label: "Projects", icon: <FolderKanban size={20} />, href: "/client/project" },
+  // { label: "Projects", icon: <FolderKanban size={20} />, href: "/client/project" },
+  { label: "Report Issue", icon: <MessageSquare size={20} />, href: "/client/reportissue" },
   { label: "Payout", icon: <CreditCard size={20} />, href: "/client/account" },
   { label: "Profile", icon: <User size={20} />, href: "/client/profile" },
 ];

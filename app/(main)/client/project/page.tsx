@@ -45,7 +45,6 @@ export default function ClientProjectsPage() {
 
       const res = await fetch(`/api/client/projects?${query}`);
       const data = await res.json();
-
       if (data.success) {
         setProjects(data.projects);
         setTotalPages(data.pagination.totalPages);
