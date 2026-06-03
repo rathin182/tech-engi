@@ -169,7 +169,7 @@ model Project {
   description  String          @db.Text
   budget       Float
   instruments  String[]
-  currentPhase String?         @default("Design")
+  currentPhase String[]         
   progress     Int             @default(0)
   priority     ProjectPriority @default(LOW)
 

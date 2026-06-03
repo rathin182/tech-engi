@@ -107,8 +107,9 @@ const staticDesignData = {
   ],
 };
 
-const DesignOverview = () => {
+const DesignOverview = ({ data }: { data: any }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  console.log(data, "hello data");
 
   const val = (v: any) =>
     Array.isArray(v)
@@ -143,6 +144,18 @@ const DesignOverview = () => {
       { label: "Uniqueness", value: val(staticDesignData.uniqueness) },
     ],
   ];
+
+  const remainingDays = data?.[0]?.endDate
+    ? Math.max(
+      0,
+      Math.ceil(
+        (new Date(data[0].endDate).getTime() - Date.now()) /
+        (1000 * 60 * 60 * 24)
+      )
+    )
+    : 0;
+
+  const project = data?.[0];
 
   return (
     <div className="dark:bg-gray-900 mt-10 flex gap-6 items-stretch">
@@ -228,123 +241,99 @@ const DesignOverview = () => {
 
       <div className="w-[65%] h-[370px] rounded-[24px] border border-[#d6d6d6] bg-[#f5f5f5] overflow-hidden">
 
-  <div className="grid grid-cols-3 h-full">
+        <div className="grid grid-cols-3 h-full">
 
-    {/* LEFT SECTION */}
-    <div className="p-5 border-r border-[#d6d6d6] flex flex-col gap-30">
+          {/* LEFT SECTION */}
+          <div className="p-5 border-r border-[#d6d6d6] flex flex-col gap-30">
 
-      {/* Status */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#18d10f] bg-[#dfffdc]">
-          <div className="w-2 h-2 rounded-full bg-[#18d10f]" />
+            {/* Status */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#18d10f] bg-[#dfffdc]">
+                <div className="w-2 h-2 rounded-full bg-[#18d10f]" />
 
-          <span className="text-[#18d10f] text-[14px] font-semibold font-id">
-            On Time
-          </span>
-        </div>
-      </div>
+                <span className="text-[#18d10f] text-[14px] font-semibold font-id">
+                  On Time
+                </span>
+              </div>
+            </div>
 
-      {/* Days */}
-      <div>
-        <h2 className="text-[42px] leading-none font-black text-black font-id">
-          28 Days
-        </h2>
+            {/* Days */}
+            <div>
+              <h2 className="text-[42px] leading-none font-black text-black font-id">
+                {remainingDays} Days
+              </h2>
 
-        <div className="w-full h-[4px] bg-[#8A16D8] mt-4" />
+              <div className="w-full h-[4px] bg-[#8A16D8] mt-4" />
 
-        <p className="text-right text-[14px] text-[#7d7d7d] mt-2 font-id">
-          Days Remaining
-        </p>
-      </div>
+              <p className="text-right text-[14px] text-[#7d7d7d] mt-2 font-id">
+                Days Remaining
+              </p>
+            </div>
 
-    </div>
-
-    {/* CENTER SECTION */}
-    <div className="p-5 border-r border-[#d6d6d6]">
-
-      <h3 className="text-[20px] font-medium text-[#7d7d7d] font-id">
-        Current Phase
-      </h3>
-
-      <div className="w-full h-[2px] bg-[#d6d6d6] mt-2 mb-5" />
-
-      <div className="space-y-4">
-
-        {/* Active */}
-        <div className="bg-gradient-to-r from-[#B14FFF] to-[#A34CF3] rounded-xl px-4 py-3 flex items-center gap-3">
-          <span className="text-white text-[18px]">✎</span>
-
-          <span className="text-white text-[20px] font-semibold font-id">
-            Design
-          </span>
-        </div>
-
-        {/* Others */}
-        <div className="flex items-center gap-3 text-[#7d7d7d]">
-          <span className="text-[18px]">&lt;/&gt;</span>
-
-          <span className="text-[20px] font-medium font-id">
-            Code
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 text-[#7d7d7d]">
-          <span className="text-[18px]">☼</span>
-
-          <span className="text-[20px] font-medium font-id">
-            Testing
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 text-[#7d7d7d]">
-          <span className="text-[18px]">▤</span>
-
-          <span className="text-[20px] font-medium font-id">
-            Deployment
-          </span>
-        </div>
-
-      </div>
-    </div>
-
-    {/* RIGHT SECTION */}
-    <div className="p-5">
-
-      <h3 className="text-[20px] font-medium text-[#7d7d7d] font-id">
-        Technology Used
-      </h3>
-
-      <div className="w-full h-[2px] bg-[#d6d6d6] mt-2 mb-5" />
-
-      <div className="space-y-4">
-
-        {[
-          ["Design", "Figma"],
-          ["Frontend", "Next.js"],
-          ["Backend", "Next.js"],
-          ["Database", "Postgres"],
-          ["Server", "KVM2 - VPS"],
-          ["Database Hosted ON", "Local"],
-        ].map(([label, value], i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between gap-3"
-          >
-            <span className="text-[15px] text-[#8a8a8a] font-id">
-              {label}
-            </span>
-
-            <span className="text-[15px] text-black font-semibold font-id text-right">
-              {value}
-            </span>
           </div>
-        ))}
 
+          {/* CENTER SECTION */}
+          <div className="p-5 border-r border-[#d6d6d6]">
+
+            <div>
+              <h3 className="text-[20px] font-medium text-[#7d7d7d] font-id">
+                Current Phase
+              </h3>
+
+              <div className="w-full h-0.5 bg-[#d6d6d6] mt-2 mb-5" />
+
+              <div className="bg-gradient-to-r from-[#B14FFF] to-[#A34CF3] rounded-xl px-4 py-3 flex items-center gap-3">
+                <span className="text-white text-[18px]">✎</span>
+
+                <span className="text-white text-[20px] font-semibold font-id">
+                  {project?.currentPhase?.length
+                    ? project.currentPhase[0]
+                    : "Not Started"}
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full h-0.5 bg-[#d6d6d6] mt-2 mb-5" />
+          </div>
+
+          {/* RIGHT SECTION */}
+          <div className="p-5">
+
+            <h3 className="text-[20px] font-medium text-[#7d7d7d] font-id">
+              Technology Used
+            </h3>
+
+            <div className="w-full h-0.5 bg-[#d6d6d6] mt-2 mb-5" />
+
+            <div className="space-y-4">
+<div className="space-y-4">
+  {project?.instruments?.length ? (
+    project.instruments.map((tech: string, i: number) => (
+      <div
+        key={i}
+        className="flex items-center justify-between gap-3"
+      >
+        <span className="text-[15px] text-[#8a8a8a] font-id">
+          Technology {i + 1}
+        </span>
+
+        <span className="text-[15px] text-black font-semibold font-id text-right capitalize">
+          {tech}
+        </span>
       </div>
-    </div>
-
-  </div>
+    ))
+  ) : (
+    <span className="text-[15px] text-[#8a8a8a] font-id">
+      No technologies specified
+    </span>
+  )}
 </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 };

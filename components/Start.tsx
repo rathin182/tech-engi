@@ -199,11 +199,7 @@ const Start = () => {
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300
 
-          ${mobileMenuOpen
-              ? "max-h-[500px] border-t border-gray-200"
-              : "max-h-0"
-            }
-        `}
+          ${mobileMenuOpen ? "max-h-[500px] border-t border-gray-200": "max-h-0"}`}
         >
           <div className="px-4 py-5 flex flex-col gap-5 bg-white">
             {/* NAV LINKS */}
@@ -278,26 +274,6 @@ const Start = () => {
                 flex
                 items-center
                 justify-center
-
-                px-4
-                py-3
-
-                text-[15px]
-
-                border-2
-                border-gray-300
-                text-[#050A30]
-              "
-              >
-                BECOME BUILDER
-              </Link>
-
-              <Link
-                href="/login"
-                className="
-                flex
-                items-center
-                justify-center
                 gap-2
 
                 px-4
@@ -309,7 +285,7 @@ const Start = () => {
                 text-white
               "
               >
-                GOT A PROJECT
+                Login
                 <span>↗</span>
               </Link>
             </div>

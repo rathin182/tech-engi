@@ -8,8 +8,7 @@ export default function AdminClientInfoCard({ user, onUpdate }: { user: any, onU
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "", bio: "" });
-console.log(user, "userss");
-
+  
   useEffect(() => {
     if (user && isOpen) setFormData({ name: user.name || "", phone: user.phone || "", bio: user.bio || "" });
   }, [user, isOpen]);

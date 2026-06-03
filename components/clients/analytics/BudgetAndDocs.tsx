@@ -2,8 +2,9 @@
 
 import { Download, FileText, Receipt, Wallet, ArrowDownCircle } from 'lucide-react';
 
-const BudgetAndDocs = ({ data }: { data: any }) => {
+const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
   if (!data) return null;
+  
 
   const { paidAmount = 0, remainingAmount = 0, totalBudget = 0, docs = [] } = data;
 
@@ -23,7 +24,7 @@ const BudgetAndDocs = ({ data }: { data: any }) => {
       {/* Left Cards */}
       <div className="col-span-1 h-full flex flex-col gap-4">
         {/* Scope of Work */}
-        <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">
+        {/* <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-xl flex items-center justify-center">
               <FileText className="w-6 h-6 text-purple-700 dark:text-purple-300" />
@@ -39,7 +40,58 @@ const BudgetAndDocs = ({ data }: { data: any }) => {
             ? <Download className="w-6 h-6 text-purple-600 dark:text-purple-300 cursor-pointer hover:scale-110 transition-transform" onClick={() => openDoc(scopeDoc.fileUrl)} />
             : <FileText className="w-6 h-6 text-gray-400 dark:text-gray-600" />
           }
+        </div> */}
+        <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex-1">
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-xl flex items-center justify-center">
+      <FileText className="w-6 h-6 text-purple-700 dark:text-purple-300" />
+    </div>
+
+    <div>
+      <h3 className="font-semibold text-gray-900 dark:text-white">
+        Kanban Tasks
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        {tasks?.length || 0} Tasks
+      </p>
+    </div>
+  </div>
+
+  {tasks?.length ? (
+    <div className="space-y-3">
+      {tasks.slice(0, 3).map((task) => (
+        <div
+          key={task.id}
+          className="bg-white dark:bg-gray-700 rounded-xl p-3 border border-gray-200 dark:border-gray-600"
+        >
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+              {task.title}
+            </h4>
+
+            <span className="text-[10px] px-2 py-1 rounded-full bg-purple-100 text-purple-700">
+              {task.priority}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-xs text-gray-500">
+              {task.status.replaceAll("_", " ")}
+            </span>
+
+            <span className="text-xs text-gray-500">
+              {new Date(task.dueDate).toLocaleDateString()}
+            </span>
+          </div>
         </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-sm text-gray-500 dark:text-gray-400">
+      No tasks available
+    </p>
+  )}
+</div>
 
         {/* Payment History */}
         <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">

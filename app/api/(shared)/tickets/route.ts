@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
         raisedBy: { select: { name: true, image: true, role: true } }
       }
     });
+    
 
     console.log(tickets, "ticketss");
     

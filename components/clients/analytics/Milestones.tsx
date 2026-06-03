@@ -77,55 +77,57 @@ const Milestones = ({ milestones = [] }: { milestones: any[] }) => {
           Milestones
         </h2>
 
-        <span className="text-[18px] text-[#8a8a8a] font-semibold">
-          Project Timeline
-        </span>
-
       </div>
 
       {/* Milestones */}
-      <div className="space-y-4 overflow-y-auto h-[320px] pr-2 no-scrollbar">
+      <div className=" h-[320px] pr-2">
 
-        {milestones.map((m) => (
-          <div
-            key={m.id}
-            className="bg-white rounded-[18px] p-5 border border-[#e6e6e6] shadow-[0_4px_18px_rgba(0,0,0,0.05)]"
-          >
+        {milestones.length === 0 ? (
+          <div className="h-full flex justify-center">
+            <p className="text-[#8a8a8a] text-sm font-medium">
+              No milestones found
+            </p>
+          </div>
+        ) : (
+          milestones.map((m) => (
+            <div
+              key={m.id}
+              className="bg-white rounded-[18px] p-5 border border-[#e6e6e6] shadow-[0_4px_18px_rgba(0,0,0,0.05)]"
+            >
 
-            {/* Top */}
-            <div className="flex items-start justify-between gap-4">
+              {/* Top */}
+              <div className="flex items-start justify-between gap-4">
 
-              <div>
-                <h3 className="text-[22px] font-bold text-black font-id">
-                  {m.title}
-                </h3>
+                <div>
+                  <h3 className="text-[22px] font-bold text-black font-id">
+                    {m.title}
+                  </h3>
 
-                <p className="text-[15px] leading-[1.5] text-[#666666] mt-2 font-medium font-id">
-                  {m.description}
-                </p>
-              </div>
+                  <p className="text-[15px] leading-[1.5] text-[#666666] mt-2 font-medium font-id">
+                    {m.description}
+                  </p>
+                </div>
 
-              <div className="flex flex-col items-end gap-3 shrink-0">
+                <div className="flex flex-col items-end gap-3 shrink-0">
 
-                <span className="bg-[#e9fff0] text-[#14b84a] border border-[#b8efca] px-3 py-1 rounded-full text-[12px] font-semibold">
-                  {m.createdAt}
-                </span>
+                  <span className="bg-[#e9fff0] text-[#14b84a] border border-[#b8efca] px-3 py-1 rounded-full text-[12px] font-semibold">
+                    {m.createdAt}
+                  </span>
 
-                {m.completed ? (
-                  <div className="w-8 h-8 rounded-full bg-[#14b84a] flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-full border-2 border-[#cfcfcf]" />
-                )}
+                  {m.completed ? (
+                    <div className="w-8 h-8 rounded-full bg-[#14b84a] flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-full border-2 border-[#cfcfcf]" />
+                  )}
+
+                </div>
 
               </div>
 
             </div>
-
-          </div>
-        ))}
-
+          )))}
       </div>
 
       {/* Bottom Fade */}
