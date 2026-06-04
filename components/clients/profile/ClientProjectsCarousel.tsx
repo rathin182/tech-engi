@@ -127,7 +127,7 @@ export default function ClientProjectsCarousel({ projects, onProjectSelect,}: Cl
                             </div>
 
                             <span
-                                className={`px-3 py-1 rounded-full border text-xs font-semibold ${getStatusColor(
+                                className={`px-3 py-1 rounded-full border text-xs font-semibold w-27 opacity-70 ${getStatusColor(
                                     project.status
                                 )}`}
                             >

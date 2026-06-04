@@ -196,19 +196,19 @@ export default function ClientAccountPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Transaction History */}
-        <div className="col-span-1 lg:col-span-2 bg-white rounded-xl border border-[var(--border)]">
+        <div className="col-span-1 lg:col-span-2 bg-white rounded-xl border border-[var(--border)] h-[600px] flex flex-col">
           <div className="p-5 border-b border-[var(--border)]">
             <h2 className="text-lg font-bold " style={{ color: "var(--text-primary)" }}>Payment History</h2>
             <p className="text-sm  mt-0.5" style={{ color: "var(--text-muted)" }}>All your transactions</p>
           </div>
 
           {transactions.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="flex-1 flex flex-col items-center justify-center">
               <DollarSign className="mx-auto mb-3" size={40} style={{ color: "var(--border)" }} />
               <p className=" text-sm" style={{ color: "var(--text-muted)" }}>No transactions yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-[var(--border)]">
+            <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
               {transactions.map((t) => (
                 <div key={t.id} className="flex items-center justify-between px-5 py-4 hover:bg-[var(--bg)] transition-colors">
                   <div className="flex items-center gap-3">
@@ -242,7 +242,7 @@ export default function ClientAccountPage() {
         </div>
 
         {/* New Activity */}
-        <div className="col-span-1 lg:col-span-1 bg-white rounded-xl border border-[var(--border)]">
+        <div className="col-span-1 lg:col-span-1 bg-white rounded-xl border border-[var(--border)] h-[600px] flex flex-col">
           <div className="p-5 border-b border-[var(--border)] flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold " style={{ color: "var(--text-primary)" }}>New Activity</h2>
@@ -256,13 +256,13 @@ export default function ClientAccountPage() {
           </div>
 
           {pendingProjects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 px-5 text-center">
+            <div className="flex-1 flex flex-col items-center justify-center px-5 text-center">
               <CheckCircle size={36} className="mb-3 text-green-400" />
               <p className="text-sm  font-semibold" style={{ color: "var(--text-primary)" }}>All caught up!</p>
               <p className="text-xs  mt-1" style={{ color: "var(--text-muted)" }}>No pending payments</p>
             </div>
           ) : (
-            <div className="divide-y divide-[var(--border)]">
+            <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
               {pendingProjects.map((p) => {
                 const isAdvance = p.status === "AWAITING_ADVANCE";
                 const amount = isAdvance ? p.budget * 0.4 : p.budget * 0.6;

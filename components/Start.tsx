@@ -270,21 +270,7 @@ const Start = () => {
             <div className="flex flex-col gap-3">
               <Link
                 href="/login"
-                className="
-                flex
-                items-center
-                justify-center
-                gap-2
-
-                px-4
-                py-3
-
-                text-[15px]
-
-                bg-black
-                text-white
-              "
-              >
+                className=" flex items-center justify-center gap-2 px-4 py-3 text-[15px] bg-black text-white">
                 Login
                 <span>↗</span>
               </Link>

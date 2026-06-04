@@ -145,6 +145,9 @@ const DesignOverview = ({ data }: { data: any }) => {
     ],
   ];
 
+  const projectsData= data?.[0]
+  console.log(projectsData);
+
   const remainingDays = data?.[0]?.endDate
     ? Math.max(
       0,
@@ -153,7 +156,21 @@ const DesignOverview = ({ data }: { data: any }) => {
         (1000 * 60 * 60 * 24)
       )
     )
-    : 0;
+    : null;
+
+  const daysDifference = data?.[0]?.endDate
+    ? Math.ceil(
+      (new Date(data[0].endDate).getTime() - Date.now()) /
+      (1000 * 60 * 60 * 24)
+    )
+    : null;
+
+  const daysText =
+    daysDifference === null
+      ? "No deadline"
+      : daysDifference >= 0
+        ? `${daysDifference} days left`
+        : `${Math.abs(daysDifference)} days delayed`;
 
   const project = data?.[0];
 
@@ -259,8 +276,27 @@ const DesignOverview = ({ data }: { data: any }) => {
 
             {/* Days */}
             <div>
-              <h2 className="text-[42px] leading-none font-black text-black font-id">
-                {remainingDays} Days
+              <h2 className="text-[30px] leading-none font-black text-black font-id">
+                <p
+                  className={
+                    daysDifference === null
+                      ? "text-gray-500"
+                      : daysDifference >= 0 ||
+                        ["COMPLETED", "CLOSED"].includes(data?.[0]?.status?.toUpperCase())
+                        ? "text-green-600"
+                        : "text-red-600"
+                  }
+                >
+                  {daysDifference === null
+                    ? "No deadline"
+                    : daysDifference >= 0
+                      ? `${daysDifference} days left`
+                      : ["COMPLETED", "CLOSED"].includes(
+                        data?.[0]?.status?.toUpperCase()
+                      )
+                        ? "Completed"
+                        : `${Math.abs(daysDifference)} days delayed`}
+                </p>
               </h2>
 
               <div className="w-full h-[4px] bg-[#8A16D8] mt-4" />
@@ -306,28 +342,28 @@ const DesignOverview = ({ data }: { data: any }) => {
             <div className="w-full h-0.5 bg-[#d6d6d6] mt-2 mb-5" />
 
             <div className="space-y-4">
-<div className="space-y-4">
-  {project?.instruments?.length ? (
-    project.instruments.map((tech: string, i: number) => (
-      <div
-        key={i}
-        className="flex items-center justify-between gap-3"
-      >
-        <span className="text-[15px] text-[#8a8a8a] font-id">
-          Technology {i + 1}
-        </span>
+              <div className="space-y-4">
+                {project?.instruments?.length ? (
+                  project.instruments.map((tech: string, i: number) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <span className="text-[15px] text-[#8a8a8a] font-id">
+                        Technology {i + 1}
+                      </span>
 
-        <span className="text-[15px] text-black font-semibold font-id text-right capitalize">
-          {tech}
-        </span>
-      </div>
-    ))
-  ) : (
-    <span className="text-[15px] text-[#8a8a8a] font-id">
-      No technologies specified
-    </span>
-  )}
-</div>
+                      <span className="text-[15px] text-black font-semibold font-id text-right capitalize">
+                        {tech}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-[15px] text-[#8a8a8a] font-id">
+                    No technologies specified
+                  </span>
+                )}
+              </div>
 
             </div>
           </div>

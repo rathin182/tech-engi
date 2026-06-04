@@ -2,7 +2,7 @@
 
 import { Download, FileText, Receipt, Wallet, ArrowDownCircle } from 'lucide-react';
 
-const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
+const BudgetAndDocs = ({ data, tasks, projects, }: { data: any; tasks: any[]; projects: any[]; }) => {
   if (!data) return null;
   
 
@@ -18,11 +18,14 @@ const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
 
   const paidPercentage = totalBudget > 0 ? Math.round((paidAmount / totalBudget) * 100) : 0;
   const remainingPercentage = 100 - paidPercentage;
+  const project = projects?.[0]; // Assuming we're looking at the first project for transactions
+  const latestTransaction =
+    project?.transactions?.[project.transactions.length - 1];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 h-full gap-6 mt-10">
       {/* Left Cards */}
-      <div className="col-span-1 h-full flex flex-col gap-4">
+      <div className=" h-full gap-4">
         {/* Scope of Work */}
         {/* <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">
           <div className="flex items-center gap-3">
@@ -41,6 +44,7 @@ const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
             : <FileText className="w-6 h-6 text-gray-400 dark:text-gray-600" />
           }
         </div> */}
+<<<<<<< HEAD
         <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex-1">
   <div className="flex items-center gap-3 mb-4">
     <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-xl flex items-center justify-center">
@@ -98,35 +102,132 @@ const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-xl flex items-center justify-center">
               <Receipt className="w-6 h-6 text-blue-700 dark:text-blue-300" />
+=======
+        {/* <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex-1">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-purple-700 dark:text-purple-300" />
+>>>>>>> a23cbf8 (chnages)
             </div>
+
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Payment History</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white">
+                Kanban Tasks
+              </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {paymentHistoryDocs.length > 0 ? `${paymentHistoryDocs.length} receipt${paymentHistoryDocs.length > 1 ? 's' : ''}` : `No receipts yet`}
+                {tasks?.length || 0} Tasks
               </p>
             </div>
           </div>
-          {paymentHistoryDocs.length > 0 ? (
-            <div className="relative group">
-              <ArrowDownCircle className="w-6 h-6 text-blue-600 dark:text-blue-300 cursor-pointer hover:scale-110 transition-transform" />
-              <div className="absolute right-0 top-8 w-64 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                <div className="p-2">
-                  {paymentHistoryDocs.map((doc: any) => (
-                    <button key={doc.id} onClick={() => openDoc(doc.fileUrl)} className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2 text-sm">
-                      <Download className="w-4 h-4" />
-                      <span className="truncate">{doc.title}</span>
-                    </button>
-                  ))}
+
+          {tasks?.length ? (
+            <div className="space-y-3">
+              {tasks.slice(0, 3).map((task) => (
+                <div
+                  key={task.id}
+                  className="bg-white dark:bg-gray-700 rounded-xl p-3 border border-gray-200 dark:border-gray-600"
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                      {task.title}
+                    </h4>
+
+                    <span className="text-[10px] px-2 py-1 rounded-full bg-purple-100 text-purple-700">
+                      {task.priority}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-xs text-gray-500">
+                      {task.status.replaceAll("_", " ")}
+                    </span>
+
+                    <span className="text-xs text-gray-500">
+                      {new Date(task.dueDate).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           ) : (
-            <Receipt className="w-6 h-6 text-gray-400 dark:text-gray-600" />
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              No tasks available
+            </p>
           )}
+        </div> */}
+
+        {/* Payment History */}
+        <div className="h-[450px] flex flex-col">
+  <h3 className="font-semibold text-gray-900 dark:text-white shrink-0">
+    Payment History
+  </h3>
+
+  {project?.transactions?.length ? (
+    <div className="mt-3 flex-1 overflow-y-auto pr-2 space-y-3">
+      {project.transactions.map((transaction: any) => (
+        <div
+          key={transaction.id}
+          className="group flex items-center justify-between rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4 transition-all duration-200 hover:shadow-md hover:border-[#FFAE58]/40"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-[#FFAE58]/15 flex items-center justify-center">
+              <Receipt className="w-5 h-5 text-[#FFAE58]" />
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-900 dark:text-white">
+                ₹{transaction.amount.toLocaleString()}
+              </p>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                {transaction.type.replaceAll("_", " ")}
+              </p>
+
+              <p className="text-xs text-gray-400 mt-1">
+                #{transaction.id.slice(0, 8)}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <span
+              className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                transaction.status === "SUCCESS"
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  : transaction.status === "FAILED"
+                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+              }`}
+            >
+              {transaction.status}
+            </span>
+
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {new Date(transaction.createdAt).toLocaleDateString()}
+            </p>
+          </div>
         </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+        <Receipt className="w-6 h-6 text-gray-400" />
+      </div>
+
+      <p className="mt-3 font-medium text-gray-900 dark:text-white">
+        No transactions yet
+      </p>
+
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        Payment history will appear here
+      </p>
+    </div>
+  )}
+</div>
 
         {/* Latest Invoice */}
-        <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">
+        {/* <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex justify-between items-center flex-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-green-200 dark:bg-green-800 rounded-xl flex items-center justify-center">
               <Wallet className="w-6 h-6 text-green-700 dark:text-green-300" />
@@ -140,7 +241,7 @@ const BudgetAndDocs = ({ data, tasks }: { data: any; tasks: any[] }) => {
             ? <Download className="w-6 h-6 text-green-600 dark:text-green-300 cursor-pointer hover:scale-110 transition-transform" onClick={() => openDoc(invoiceDoc.fileUrl)} />
             : <Wallet className="w-6 h-6 text-gray-400 dark:text-gray-600" />
           }
-        </div>
+        </div> */}
       </div>
 
       {/* Right — Budget Overview */}

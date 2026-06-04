@@ -69,7 +69,7 @@ export default function DirectMessageUI() {
   }
 
   return (
-    <div className="flex h-[91vh] w-full bg-white border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
+    <div className="flex h-[90vh] w-full bg-white border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
       <ChatSidebar 
         currentUser={currentUser} 
         contacts={contacts} 

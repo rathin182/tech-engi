@@ -63,54 +63,72 @@ const updates = [
   },
 ];
 
-const LatestUpdates = () => {
+const LatestUpdates = ({ data, }: { data: any; }) => {
+  const project = data?.[0];
+
   return (
-    <div className="relative w-full h-[620px] rounded-[24px] border-2 border-[#cfcfcf] bg-[#f5f5f5] p-6 overflow-hidden">
+    <div className="relative w-full h-[620px] rounded-[24px] border-2 border-[#cfcfcf] bg-[#f5f5f5] p-6 flex flex-col overflow-hidden">
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-5">
+  {/* Header */}
+  <div className="flex items-start justify-between mb-5 shrink-0">
+    <h2 className="text-[46px] leading-none font-black text-black font-id">
+      Latest Updates
+    </h2>
 
-        <h2 className="text-[46px] leading-none font-black text-black font-id">
-          Latest Updates
-        </h2>
+    <span className="text-[24px] text-[#7d7d7d] font-semibold font-id mt-1">
+      {new Date(project?.updatedAt).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })}
+    </span>
+  </div>
 
-        <span className="text-[24px] text-[#7d7d7d] font-semibold font-id mt-1">
-          18 Jan. 2026
-        </span>
+  {/* Scrollable Updates */}
+  <div className="flex-1 min-h-0 overflow-y-auto pr-2 space-y-5 no-scrollbar">
 
+    {project?.kanbanTasks?.length > 0 ? (
+      project.kanbanTasks.map((task: any) => (
+        <div
+          key={task.id}
+          className="bg-[#fafafa] rounded-[18px] px-5 py-5 shadow-[0_4px_18px_rgba(0,0,0,0.06)] relative"
+        >
+          {/* Date */}
+          <span className="absolute top-4 right-5 text-[18px] font-semibold text-[#7B3FFF] font-id">
+            {new Date(
+              task.updatedAt || task.createdAt
+            ).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+
+          {/* Title */}
+          <h3 className="text-[22px] font-semibold text-gray-700 mb-2 pr-24">
+            {task.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-[18px] leading-[1.5] text-[#474747] font-medium pr-24">
+            {task.description || "Task updated"}
+          </p>
+        </div>
+      ))
+    ) : (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-xl text-[#7d7d7d] font-medium">
+          No updates available
+        </p>
       </div>
+    )}
 
-      {/* Updates */}
-      {/* <div className="space-y-5 overflow-y-auto h-[410px] pr-2 no-scrollbar"> */}
-      <div className="space-y-5 h-[520px] overflow-hidden relative">
+  </div>
 
-        {updates.map((item) => (
-          <div
-            key={item.id}
-            className="bg-[#fafafa] rounded-[18px] px-5 py-5 shadow-[0_4px_18px_rgba(0,0,0,0.06)] relative"
-          >
+  {/* Bottom Fade */}
+  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#f5f5f5] via-[#f5f5f5]/90 to-transparent z-20" />
 
-            {/* Date */}
-            <span className="absolute top-4 right-5 text-[18px] font-semibold text-[#7B3FFF] font-id">
-              {item.date}
-            </span>
-
-            {/* Text */}
-            <p className="text-[22px] leading-[1.4] text-[#474747] font-medium font-id pr-24">
-              {item.text}
-            </p>
-
-          </div>
-        ))}
-
-      </div>
-
-      {/* Bottom Fade */}
-      {/* <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f5f5f5] to-transparent" /> */}
-
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#f5f5f5] via-[#f5f5f5]/90 to-transparent z-20" />
-
-    </div>
+</div>
   );
 };
 

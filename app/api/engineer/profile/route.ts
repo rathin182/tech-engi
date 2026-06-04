@@ -12,7 +12,14 @@ export async function GET() {
       return NextResponse.json({ success: false, message: error || "Unauthorized" }, { status: 401 });
     }
 
-    const profile = await prisma.engineerProfile.findUnique({ where: { userId: user.id } });
+    const profile = await prisma.engineerProfile.findUnique({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        assignedWork: true,
+      },
+    });
 
     return NextResponse.json({ success: true, user, profile }, { status: 200 });
   } catch {
@@ -33,10 +40,10 @@ const engineerProfileSchema = z.object({
   skills: z.array(z.string()).min(1, "At least one skill is required"),
   certifications: z.array(certificateSchema).optional(),
   yearsOfExperience: z.enum([
-    "FRESHER", 
-    "ONE_TO_TWO_YEARS", 
-    "THREE_TO_FIVE_YEARS", 
-    "FIVE_TO_EIGHT_YEARS", 
+    "FRESHER",
+    "ONE_TO_TWO_YEARS",
+    "THREE_TO_FIVE_YEARS",
+    "FIVE_TO_EIGHT_YEARS",
     "EIGHT_PLUS_YEARS"
   ]).optional().nullable(),
 });
@@ -53,10 +60,10 @@ export async function POST(req: NextRequest) {
     }
 
     const formData = await req.formData();
-    
+
     const idFile = formData.get("file") as File;
-    if (!idFile){
-        return NextResponse.json({ success: false, message: "ID Image is required" }, { status: 400 });
+    if (!idFile) {
+      return NextResponse.json({ success: false, message: "ID Image is required" }, { status: 400 });
     }
 
     const data = {
@@ -122,12 +129,12 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const { user, error } = await getEngineer(false);
-    if (error || !user){
+    if (error || !user) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     const formData = await req.formData();
-    
+
     const name = formData.get("name") as string | null;
     const phone = formData.get("phone") as string | null;
     const bio = formData.get("bio") as string | null;
@@ -160,12 +167,12 @@ export async function PUT(req: NextRequest) {
     if (qualification && idType && idNumber) {
       let skills: string[] = [];
       let parsedCerts: any[] = [];
-      try { skills = JSON.parse(skillsRaw || "[]"); } catch {}
-      try { parsedCerts = JSON.parse(certsRaw || "[]"); } catch {}
+      try { skills = JSON.parse(skillsRaw || "[]"); } catch { }
+      try { parsedCerts = JSON.parse(certsRaw || "[]"); } catch { }
 
       const existingProfile = await prisma.engineerProfile.findUnique({ where: { userId: user.id } });
       let idFileUrl = existingProfile?.idFile || "";
-      
+
       if (idFile && idFile.size > 0) {
         if (idFileUrl) await deleteFile(idFileUrl);
         idFileUrl = await uploadFile(idFile, "kyc");
@@ -190,7 +197,7 @@ export async function PUT(req: NextRequest) {
 
         for (const oldCert of oldCerts) {
           if (oldCert.fileUrl && !newUrls.includes(oldCert.fileUrl)) {
-             await deleteFile(oldCert.fileUrl);
+            await deleteFile(oldCert.fileUrl);
           }
         }
       }
@@ -203,14 +210,14 @@ export async function PUT(req: NextRequest) {
 
       if (skills.length > 0) {
         generateEmbedding(`Skills: ${skills.join(", ")}`)
-        .then((embeddingVector) => {
-          const vectorString = JSON.stringify(embeddingVector);
-          return prisma.$executeRaw`
+          .then((embeddingVector) => {
+            const vectorString = JSON.stringify(embeddingVector);
+            return prisma.$executeRaw`
             UPDATE "EngineerProfile"
             SET embedding = ${vectorString}::vector
             WHERE id = ${newProfile.id}
           `;
-        });
+          });
       }
     }
 

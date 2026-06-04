@@ -7,6 +7,7 @@ import EngineerInfoCard from "@/components/engineer/profile/EngineerInfoCard";
 import EngineerDetailsCard from "@/components/engineer/profile/EngineerDetailsCard";
 import EngineerAccountCard from "@/components/engineer/profile/EngineerAccountCard";
 import DashboardShell from "@/components/layout/DashboardShell";
+import EngineerProjectsCarousel from "@/components/engineer/profile/EngineerProjectsCarousel";
 
 export default function Profile() {
   const { data, isLoading, mutate } = useSWR("/api/engineer/profile", fetcher);
@@ -28,6 +29,7 @@ export default function Profile() {
   const profile = data?.profile;
 
   if (!user) return <p className="text-center mt-10">No user found</p>;
+console.log(user, "profile", profile);
 
   return (
     <DashboardShell>
@@ -40,6 +42,7 @@ export default function Profile() {
       <div className="space-y-6">
         <EngineerMetaCard user={user} />
         <EngineerInfoCard user={user} onUpdate={() => mutate()} />
+          <EngineerProjectsCarousel projects={profile?.assignedWork || []} />
         <EngineerDetailsCard profile={profile} onUpdate={() => mutate()} />
         <EngineerAccountCard />
       </div>

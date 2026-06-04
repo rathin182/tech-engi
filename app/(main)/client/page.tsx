@@ -20,6 +20,8 @@ interface Project {
   basicDetails: string;
   progress: number;
   createdAt: string;
+  status: string;
+  endDate: string;
 }
 
 interface User {
@@ -68,8 +70,7 @@ const ClientAnalyticsDashboard = () => {
       .then(res => {
         if (res.success) {
           if (projectId && !showProjects) {
-            console.log(res.data?.projects, "res.data?.projects", res.data);
-            
+
             setProjectAnalytics(res.data);
           } else {
             setProjectsList(res.projects || []);
@@ -117,9 +118,6 @@ const ClientAnalyticsDashboard = () => {
       </div>
     </div>
   );
-
-  console.log(projectAnalytics, "projectAnalytics");
-  
 
   // Projects List
   if (!projectId || showProjects) return (
@@ -177,7 +175,14 @@ const ClientAnalyticsDashboard = () => {
                   {project.title}
                 </h3>
                 <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full border whitespace-nowrap ${PRIORITY_COLOR[project.priority] ?? 'bg-gray-100/20 text-gray-500 border-gray-200'}`}>
-                  {project.priority}
+                  {
+                    project.endDate
+                      ? new Date() > new Date(project.endDate) &&
+                        !["COMPLETED", "CANCELED", "AWAITING_FINAL_PAYMENT"].includes(project.status)
+                        ? "Delayed"
+                        : project.status
+                      : "-"
+                  }
                 </span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{project.description || 'No summary available'}</p>
@@ -217,11 +222,11 @@ const ClientAnalyticsDashboard = () => {
       </div>
 
       <ClientOverview data={projectAnalytics?.overview} />
-      <DesignOverview data={projectAnalytics?.projects}  />
-{/* data={projectAnalytics?.design} */}
+      <DesignOverview data={projectAnalytics?.projects} />
+      {/* data={projectAnalytics?.design} */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <LatestUpdates />
+          <LatestUpdates data={projectAnalytics?.projects} />
           {/* updates={projectAnalytics?.updates} */}
         </div>
         <div className="lg:col-span-1 space-y-3">
@@ -230,7 +235,7 @@ const ClientAnalyticsDashboard = () => {
         </div>
       </div>
 
-      <BudgetAndDocs data={projectAnalytics?.budget} tasks={projectAnalytics?.projects} />
+      <BudgetAndDocs data={projectAnalytics?.budget} tasks={projectAnalytics?.projects} projects={projectAnalytics?.projects} />
       <DesignPreviewSection data={projectAnalytics?.preview} />
     </div>
   );

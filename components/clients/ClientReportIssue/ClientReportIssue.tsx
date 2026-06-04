@@ -46,7 +46,7 @@ const ClientReportIssue = () => {
     const fetchTickets = async () => {
         try {
             setFetchTicket(true);
-            const res = await fetch(`/api/tickets?projectId=${selectedProjectId}`);
+            const res = await fetch(`/api/tickets?all=true`);
             const data = await res.json();
             if (!res.ok || !data.success) {
                 throw new Error(data.message || "Failed to fetch tickets");
@@ -57,6 +57,41 @@ const ClientReportIssue = () => {
             toast.error(err.message);
         } finally {
             setFetchTicket(false);
+        }
+    };
+
+    const handleCreateTicket = async ({ }) => {
+        try {
+            setCreating(true);
+
+            const formData = new FormData();
+            formData.append("projectId", selectedProjectId);
+            formData.append("issueType", newTicket.issueType);
+            formData.append("target", newTicket.target);
+            formData.append("description", newTicket.description);
+
+            newTicket.images.forEach((file) => {
+                formData.append("images", file);
+            });
+
+            const res = await fetch("/api/tickets", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || "Failed to create ticket");
+            }
+
+            toast.success("Ticket submitted successfully");
+            await fetchTickets();
+            // onSuccess?.(); // close modal / refresh
+        } catch (err: any) {
+            toast.error(err.message);
+        } finally {
+            setCreating(false);
         }
     };
 
@@ -108,11 +143,8 @@ const ClientReportIssue = () => {
         };
 
         fetchProjects();
-    }, []);
-
-    useEffect(() => {
         fetchTickets();
-    }, [selectedProjectId]);
+    }, []);
 
     const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : ["ME", "ENGINEER", "CLIENT", "ADMIN"];
 
@@ -163,7 +195,7 @@ const ClientReportIssue = () => {
     const targetOptions = role === "ADMIN" ? ["Engineer"] : ["PLATFORM", "CLIENT"];
 
     return (
-        <div className="h-full w-full p-4">
+        <div className="h-full w-full">
             <div className="px-2">
                 <div className=" rounded-2xl ">
                     <div className="flex items-center justify-between mb-4">
@@ -183,7 +215,21 @@ const ClientReportIssue = () => {
                             </p>
                         </div>
 
-                        <div className="w-[320px]">
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="cursor-pointer group relative overflow-hidden rounded-xl px-5 py-2.5 font-semibold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                            style={{
+                                background: "linear-gradient(135deg, #FFAE58 0%, #FF9D2E 100%)",
+                                boxShadow: "0 10px 25px rgba(255, 174, 88, 0.35)",
+                            }}
+                        >
+                            <span className="absolute inset-0 bg-white/20 translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
+                            <span className="relative flex items-center gap-2">
+                                <AlertCircle size={16} />
+                                Report Issue
+                            </span>
+                        </button>
+                        {/* <div className="w-[320px]">
                             <select
                                 value={selectedProjectId}
                                 onChange={(e) => setSelectedProjectId(e.target.value)}
@@ -202,26 +248,8 @@ const ClientReportIssue = () => {
                                     </option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
                     </div>
-
-                    {/* {selectedProjectId && (
-                        <div
-                            className="rounded-xl border border-[#FFD9A8] bg-[#FFF8F1] p-4"
-                        >
-                            <p className="text-sm text-gray-600">
-                                Selected Project
-                            </p>
-
-                            <h3 className="font-semibold text-lg text-gray-900 mt-1">
-                                {
-                                    projects.find(
-                                        (p) => p.id === selectedProjectId
-                                    )?.title
-                                }
-                            </h3>
-                        </div>
-                    )} */}
                 </div>
 
                 {/* Tickets Section Here */}
@@ -339,9 +367,12 @@ const ClientReportIssue = () => {
                                                         {/* Top Row */}
                                                         <div className="flex items-center justify-between">
                                                             {/* Type Badge */}
-                                                            <span className="text-xs uppercase font-semibold px-2.5 py-0.5 rounded-full border bg-gray-100 text-gray-700 border-gray-200">
-                                                                {report.issueType}
-                                                            </span>
+                                                            <div className="flex gap-4">
+                                                                <span className="text-xs uppercase font-semibold px-2.5 py-0.5 rounded-full border bg-gray-100 text-gray-700 border-gray-200">
+                                                                    {report.issueType}
+                                                                </span>
+                                                                {/* <span className="text-xs uppercase font-semibold px-2.5 py-0.5 rounded-full border bg-gray-100 text-gray-700 border-gray-200">{report.project?.title}</span> */}
+                                                            </div>
 
                                                             {/* ✅ Status Dropdown */}
                                                             <div className="relative">
@@ -406,6 +437,7 @@ const ClientReportIssue = () => {
                                                         >
                                                             {report.description}
                                                         </p>
+                                                        <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>Project: {report.project?.title}</p>
 
                                                         {/* Images */}
                                                         {report.images?.length > 0 && (
@@ -453,6 +485,233 @@ const ClientReportIssue = () => {
                 </div>
             </div>
 
+            {showModal && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white text-black! w-full max-w-md p-6 rounded-xl border border-[var(--border)] shadow-lg">
+                        <h3
+                            className="text-lg font-semibold  mb-4"
+                            style={{ color: "var(--text-primary)" }}
+                        >
+                            Raise a Ticket
+                        </h3>
+
+                        <div className="space-y-4">
+                            {/* Ticket Type */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5">
+                                    Issue Type *
+                                </label>
+                                <select
+                                    value={newTicket.issueType}
+                                    onChange={(e) =>
+                                        setNewTicket({ ...newTicket, issueType: e.target.value })
+                                    }
+                                    className={inputCls}
+                                    disabled={creating}
+                                >
+                                    <option value="">Select issue type</option>
+                                    <option value="PAYMENT">Payment</option>
+                                    <option value="COMMUNICATION">Communication</option>
+                                    <option value="TECHNICAL">Technical</option>
+                                    <option value="DELIVERY">Delivery</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+
+                            {/* select project */}
+
+                            <div className="">
+                                <select
+                                    value={selectedProjectId}
+                                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                                >
+                                    <option value="" disabled>
+                                        Select Project
+                                    </option>
+
+                                    {projects.map((project) => (
+                                        <option
+                                            key={project.id}
+                                            value={project.id}
+                                        >
+                                            {project.title}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Target */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5">
+                                    Target *
+                                </label>
+                                <div className="flex gap-4">
+                                    {targetOptions.map((t) => (
+                                        <label
+                                            key={t}
+                                            className="flex items-center gap-2 cursor-pointer text-sm"
+                                        >
+                                            <input
+                                                type="radio"
+                                                value={t}
+                                                checked={newTicket.target === t}
+                                                onChange={(e) =>
+                                                    setNewTicket({ ...newTicket, target: e.target.value })
+                                                }
+                                                disabled={creating}
+                                            />
+                                            {t}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5">
+                                    Description *
+                                </label>
+                                <textarea
+                                    value={newTicket.description}
+                                    onChange={(e) =>
+                                        setNewTicket({ ...newTicket, description: e.target.value })
+                                    }
+                                    className={`${inputCls} resize-none`}
+                                    rows={4}
+                                    placeholder="Describe the issue..."
+                                    disabled={creating}
+                                />
+                            </div>
+
+                            {/* Images */}
+                            {/* <div>
+                <label className="block text-sm font-medium mb-1.5">
+                  Upload Images
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) =>
+                    setNewTicket({
+                      ...newTicket,
+                      images: Array.from(e.target.files || []),
+                    })
+                  }
+                  disabled={creating}
+                />
+              </div> */}
+                            <div>
+                                <label className="block text-sm font-semibold mb-2 text-[var(--text-primary)]">
+                                    Upload Images
+                                </label>
+
+                                <label
+                                    htmlFor="ticket-images"
+                                    className={` group flex flex-col items-center justify-center w-full min-h-[140px] rounded-2xl border-2 border-dashed border-[#FFD4A6] bg-gradient-to-br from-[#FFF8F1] to-[#FFF3E6] cursor-pointer transition-all duration-300 hover:border-[#FFAE58] hover:shadow-[0_8px_30px_rgba(255,174,88,0.15)]`}>
+                                    <input
+                                        id="ticket-images"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        disabled={creating}
+                                        className="hidden"
+                                        onChange={(e) =>
+                                            setNewTicket({
+                                                ...newTicket,
+                                                images: Array.from(e.target.files || []),
+                                            })
+                                        }
+                                    />
+
+                                    <div className="w-12 h-12 rounded-2xl bg-[#FFAE58]/15 flex items-center justify-center mb-3">
+                                        <Upload className="w-6 h-6 text-[#FFAE58]" />
+                                    </div>
+
+                                    <p className="text-sm font-semibold text-gray-800">
+                                        Click to upload images
+                                    </p>
+
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        PNG, JPG, JPEG • Multiple files supported
+                                    </p>
+
+                                    {newTicket.images.length > 0 && (
+                                        <div className="mt-5 grid grid-cols-3 gap-3 w-full px-4">
+                                            {newTicket.images.map((file, index) => (
+                                                <div
+                                                    key={index}
+                                                    className=" relative group overflow-hidden rounded-xl border border-[#FFD4A6] bg-white">
+                                                    <img
+                                                        src={URL.createObjectURL(file)}
+                                                        alt={file.name}
+                                                        className=" h-24 w-full object-cover" />
+
+                                                    <div
+                                                        className=" absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1">
+                                                        <p
+                                                            className=" text-white text-[10px] truncate">
+                                                            {file.name}
+                                                        </p>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+
+                                                            setNewTicket((prev) => ({
+                                                                ...prev,
+                                                                images: prev.images.filter(
+                                                                    (_, i) => i !== index
+                                                                ),
+                                                            }));
+                                                        }}
+                                                        className=" absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button
+                                onClick={() => {
+                                    setShowModal(false);
+                                    setNewTicket({
+                                        issueType: "",
+                                        target: "PLATFORM",
+                                        description: "",
+                                        images: [],
+                                    });
+                                }}
+                                className="px-4 py-2 border rounded-lg text-sm"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={handleCreateTicket}
+                                disabled={
+                                    creating ||
+                                    !newTicket.issueType ||
+                                    !newTicket.description.trim()
+                                }
+                                className="px-4 py-2 text-white rounded-lg text-sm disabled:opacity-40"
+                                style={{ background: "var(--primary)" }}
+                            >
+                                {creating ? "Submitting..." : "Submit Ticket"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

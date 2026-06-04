@@ -4,7 +4,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className="bg-green-400 w-full h-screen p-4">
+    <div className="w-full h-full">
         <ClientReportIssue />
     </div>
   )
