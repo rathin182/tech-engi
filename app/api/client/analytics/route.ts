@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
         pending60Payments.push({ id: p.id, title: p.title, amount });
       }
 
-      if (p.status === "AWAITING_ADVANCE" && !p.advancePaid) {
+      if (p.status === "DRAFT" && !p.advancePaid) {
         const amount = p.budget * 0.40;
         totalPending40Amount += amount;
         pending40Payments.push({ id: p.id, title: p.title, amount });

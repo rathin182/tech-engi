@@ -9,7 +9,7 @@ export async function GET() {
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const totalProjects = await prisma.project.count({ where: { status: { notIn: ["DRAFT", "AWAITING_ADVANCE"]}} });
+    const totalProjects = await prisma.project.count({ where: { status: { notIn: ["DRAFT"]}} });
     const totalClients = await prisma.user.count({ where: { role: "CLIENT" } });
     const ongoingProjects = await prisma.project.count({ where: { status: { in: ["IN_REVIEW", "IN_PROGRESS"] } } });
     const completedProjects = await prisma.project.count({ where: { status: "COMPLETED" } });

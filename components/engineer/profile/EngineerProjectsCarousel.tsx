@@ -51,7 +51,7 @@ export default function EngineerProjectsCarousel({
       case "CANCELLED":
         return "bg-red-100 text-red-700 border-red-200";
 
-      case "AWAITING_ADVANCE":
+      case "DRAFT":
         return "bg-orange-100 text-orange-700 border-orange-200";
 
       default:

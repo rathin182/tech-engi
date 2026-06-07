@@ -53,7 +53,7 @@ async function main() {
         budget: 10000,
         instruments: ["Arduino", "DHT11", "Relay Module", "ESP8266"],
         advancePaid: false,
-        status: ProjectStatus.AWAITING_ADVANCE,
+        status: ProjectStatus.DRAFT,
       }
     });
 
@@ -65,7 +65,7 @@ async function main() {
         budget: 25000,
         instruments: ["STM32", "IMU MPU6050", "C++", "ESC"],
         advancePaid: false,
-        status: ProjectStatus.AWAITING_ADVANCE,
+        status: ProjectStatus.DRAFT,
       }
     });
 
@@ -77,7 +77,7 @@ async function main() {
         budget: 10000,
         instruments: ["Altium", "Eagle", "KiCad", "SMD Soldering"],
         advancePaid: false,
-        status: ProjectStatus.AWAITING_ADVANCE,
+        status: ProjectStatus.DRAFT,
       }
     });
   }

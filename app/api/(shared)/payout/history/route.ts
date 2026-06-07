@@ -114,11 +114,11 @@ export async function GET() {
       const totalProjects = projects.length;
       const totalBudget = projects.reduce((acc, p) => acc + (p.budget || 0), 0);
       
-      const pendingProjects = projects.filter(p => p.status === "AWAITING_ADVANCE" || p.status === "AWAITING_FINAL_PAYMENT");
+      const pendingProjects = projects.filter(p => p.status === "DRAFT" || p.status === "AWAITING_FINAL_PAYMENT");
       
       let pendingAmount = 0;
       for (const p of pendingProjects) {
-        if (p.status === "AWAITING_ADVANCE") {
+        if (p.status === "DRAFT") {
           pendingAmount += (p.budget || 0) * 0.4;
         } else if (p.status === "AWAITING_FINAL_PAYMENT") {
           pendingAmount += (p.budget || 0) * 0.6;

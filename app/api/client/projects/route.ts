@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
     if (status !== "ALL") {
       const validStatuses = [
         "DRAFT",
-        "AWAITING_ADVANCE",
         "SEARCHING",
         "IN_PROGRESS",
         "IN_REVIEW",
@@ -177,7 +176,7 @@ export async function POST(req: NextRequest) {
         instruments,
         startDate,
         endDate,
-        status: "AWAITING_ADVANCE",
+        status: "DRAFT",
       },
     });
 

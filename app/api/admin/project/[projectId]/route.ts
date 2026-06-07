@@ -17,7 +17,7 @@ const adminUpdateSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").optional(),
   description: z.string().min(10, "Please provide a more detailed description").optional(),
   budget: z.number().min(500, "Minimum budget must be ₹500").optional(),
-  status: z.enum(["DRAFT", "AWAITING_ADVANCE", "SEARCHING", "IN_PROGRESS", "IN_REVIEW", "AWAITING_FINAL_PAYMENT", "COMPLETED", "CANCELED"]).optional(),
+  status: z.enum(["DRAFT", "SEARCHING", "IN_PROGRESS", "IN_REVIEW", "AWAITING_FINAL_PAYMENT", "COMPLETED", "CANCELED"]).optional(),
   progress: z.number().min(0).max(100).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
   repository: z.string().url("Must be a valid URL").optional().nullable(),

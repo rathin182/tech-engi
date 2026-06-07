@@ -67,7 +67,7 @@ export default function ClientAccountPage() {
   async function handlePay(project: PendingProject) {
     setPaying(project.id);
     
-    const isAdvance = project.status === "AWAITING_ADVANCE";
+    const isAdvance = project.status === "DRAFT";
     const description = isAdvance ? "Advance Payment (40%)" : "Final Payment (60%)";
 
     processPayment({
@@ -264,7 +264,7 @@ export default function ClientAccountPage() {
           ) : (
             <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
               {pendingProjects.map((p) => {
-                const isAdvance = p.status === "AWAITING_ADVANCE";
+                const isAdvance = p.status === "DRAFT";
                 const amount = isAdvance ? p.budget * 0.4 : p.budget * 0.6;
                 return (
                   <div key={p.id} className="p-4 hover:bg-[var(--bg)] transition-colors">
