@@ -94,11 +94,17 @@ model EngineerProfile {
   status                  ApprovalStatus   @default(PENDING)
   rejectionReason         String?          @db.Text
   qualification           Qualification
+  qualificationType       String?
+  university              String?
   idType                  IdType
   idNumber                String
   idFile                  String
+  github                  String?
+  portfolio               String?
+  achievements            String[]
+  linkedin                String?
   yearsOfExperience       ExperienceLevel?
-  yearsOfExperienceNumber Int? @default(0)
+  yearsOfExperienceNumber Int?             @default(0)
 
   certifications    Json                        @default("[]")
   skills            String[]
@@ -145,7 +151,6 @@ model PayoutDetail {
 
 enum ProjectStatus {
   DRAFT
-  AWAITING_ADVANCE
   SEARCHING
   IN_PROGRESS
   IN_REVIEW
@@ -169,7 +174,8 @@ model Project {
   description  String          @db.Text
   budget       Float
   instruments  String[]
-  currentPhase String[]         
+  currentPhase String[]
+  technology   Json?
   progress     Int             @default(0)
   priority     ProjectPriority @default(LOW)
 
@@ -399,6 +405,7 @@ enum TicketStatus {
 enum TicketTarget {
   PLATFORM
   CLIENT
+  ENGINEER
 }
 
 model Ticket {

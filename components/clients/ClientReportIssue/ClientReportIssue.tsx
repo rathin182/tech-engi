@@ -51,7 +51,6 @@ const ClientReportIssue = () => {
             if (!res.ok || !data.success) {
                 throw new Error(data.message || "Failed to fetch tickets");
             }
-
             setTickets(data.tickets);
         } catch (err: any) {
             toast.error(err.message);
@@ -146,7 +145,7 @@ const ClientReportIssue = () => {
         fetchTickets();
     }, []);
 
-    const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : role === "CLIENT"? ["ME", "ENGINEER", "ADMIN"]: ["ME", "ADMIN"];
+    const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : ["ME", "ENGINEER", "CLIENT", "ADMIN"];
 
     const inputCls = "w-full px-3 py-2 rounded-lg bg-white border border-[var(--border)]  text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]";
 

@@ -18,7 +18,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ proj
           take: 3,
           orderBy: { updatedAt: "desc" }
         },
-        milestones: true 
+        milestones: true,
+        designSystem: true, 
       }
     });
  

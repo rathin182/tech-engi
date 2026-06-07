@@ -72,7 +72,7 @@ const LatestUpdates = ({ data, }: { data: any; }) => {
   {/* Header */}
   <div className="flex items-start justify-between mb-5 shrink-0">
     <h2 className="text-[46px] leading-none font-black text-black font-id">
-      Latest Updates
+      Latest Task
     </h2>
 
     <span className="text-[24px] text-[#7d7d7d] font-semibold font-id mt-1">

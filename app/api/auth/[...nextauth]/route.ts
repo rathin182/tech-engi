@@ -37,17 +37,18 @@ export const authOptions: NextAuthOptions = {
             engineerProfile: true,
           },
         });
+console.log(user);
 
         if (!user) throw new Error("Invalid password or email");
         if (user.isSuspended) throw new Error("Your account has been suspended.");
         if (user.password === null) throw new Error("Password is not set, please login with Google");
-        // if (user.engineerProfile?.status !=="APPROVED") {
-        //   throw new Error("Only approved engineers can login with email and password");
-        // }
-
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
         if (!isPasswordValid) throw new Error("Invalid password or email");
-
+        if (user.role === "ENGINEER" &&
+          user.engineerProfile &&
+          user.engineerProfile.status !== "APPROVED") {
+          throw new Error("Only approved engineers can login with email and password");
+        }
         return user;
       }
     })

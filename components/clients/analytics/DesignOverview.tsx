@@ -108,8 +108,11 @@ const staticDesignData = {
 };
 
 const DesignOverview = ({ data }: { data: any }) => {
+  const project = data?.[0];
+
+  const designSystem = project?.designSystem || {};
   const [currentSlide, setCurrentSlide] = useState(0);
-  console.log(data, "hello data");
+  console.log(data, "data");
 
   const val = (v: any) =>
     Array.isArray(v)
@@ -120,33 +123,28 @@ const DesignOverview = ({ data }: { data: any }) => {
 
   const slides = [
     [
-      { label: "Brand Name", value: val(staticDesignData.brandName) },
-      { label: "Design Type", value: val(staticDesignData.designType) },
-      { label: "Brand Feel", value: val(staticDesignData.brandFeel) },
+      { label: "Brand Name", value: designSystem?.brandName || "-" },
+      { label: "Brand Feel", value: designSystem?.brandFeel || "-" },
+      { label: "Theme", value: designSystem?.theme?.[0] || "-" },
     ],
-
     [
-      { label: "Content Tone", value: val(staticDesignData.contentTone) },
-      { label: "Theme", value: val(staticDesignData.theme) },
-      { label: "Key Pages", value: val(staticDesignData.keyPages) },
+      { label: "Primary Font", value: designSystem?.fonts?.primary || "-" },
+      { label: "Secondary Font", value: designSystem?.fonts?.secondary || "-" },
     ],
-
     [
-      { label: "Fonts", value: val(staticDesignData.fonts) },
-      { label: "Layout Style", value: val(staticDesignData.layoutStyle) },
+      { label: "Design Type", value: designSystem?.designType?.[0] || "-" },
+      { label: "Content Tone", value: designSystem?.contentTone?.[0] || "-" },
+    ],
+    [
+      { label: "Key Pages", value: designSystem?.keyPages?.join(", ") || "-" },
       {
-        label: "Visual Guidelines",
-        value: val(staticDesignData.visualGuidelines),
+        label: "Uniqueness",
+        value: designSystem?.uniqueness?.differentiator || "-",
       },
-    ],
-
-    [
-      { label: "Uniqueness", value: val(staticDesignData.uniqueness) },
     ],
   ];
 
-  const projectsData= data?.[0]
-  console.log(projectsData);
+  const projectsData = data?.[0]
 
   const remainingDays = data?.[0]?.endDate
     ? Math.max(
@@ -172,8 +170,6 @@ const DesignOverview = ({ data }: { data: any }) => {
         ? `${daysDifference} days left`
         : `${Math.abs(daysDifference)} days delayed`;
 
-  const project = data?.[0];
-
   return (
     <div className="dark:bg-gray-900 mt-10 flex gap-6 items-stretch">
       <div className="w-[35%] h-[380px] bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 border-2 border-blue-200 dark:border-blue-800 relative">
@@ -193,17 +189,21 @@ const DesignOverview = ({ data }: { data: any }) => {
             </h3>
 
             <div className="flex gap-2">
-              {staticDesignData.colors.map((color: string, i: number) => (
-                <div
-                  key={i}
-                  className="group flex items-center h-8 w-8 hover:w-24 px-2 rounded-full border-2 border-gray-200 dark:border-gray-600 transition-all duration-300 ease-out cursor-pointer overflow-hidden"
-                  style={{ backgroundColor: color }}
-                >
-                  <span className="ml-2 text-xs font-semibold text-white opacity-0 group-hover:opacity-100 translate-x-[-6px] group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap">
-                    {color.toUpperCase()}
-                  </span>
-                </div>
-              ))}
+              {designSystem?.colors?.length ? (
+                designSystem.colors.map((color: string, i: number) => (
+                  <div
+                    key={i}
+                    className="group flex items-center h-8 w-8 hover:w-24 px-2 rounded-full border-2 border-gray-200 dark:border-gray-600 transition-all duration-300 ease-out cursor-pointer overflow-hidden"
+                    style={{ backgroundColor: color }}
+                  >
+                    <span className="ml-2 text-xs font-semibold text-white opacity-0 group-hover:opacity-100 translate-x-[-6px] group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap">
+                      {color.toUpperCase()}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <span className="text-sm text-gray-400">No colors</span>
+              )}
             </div>
           </div>
 
@@ -342,28 +342,38 @@ const DesignOverview = ({ data }: { data: any }) => {
             <div className="w-full h-0.5 bg-[#d6d6d6] mt-2 mb-5" />
 
             <div className="space-y-4">
-              <div className="space-y-4">
-                {project?.instruments?.length ? (
-                  project.instruments.map((tech: string, i: number) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between gap-3"
-                    >
-                      <span className="text-[15px] text-[#8a8a8a] font-id">
-                        Technology {i + 1}
-                      </span>
 
-                      <span className="text-[15px] text-black font-semibold font-id text-right capitalize">
-                        {tech}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <span className="text-[15px] text-[#8a8a8a] font-id">
-                    No technologies specified
-                  </span>
-                )}
-              </div>
+              {project?.technology?.length ? (
+                Object.entries(
+                  project.technology.reduce((acc: any, item: any) => {
+                    if (!item?.area) return acc;
+
+                    if (!acc[item.area]) {
+                      acc[item.area] = [];
+                    }
+
+                    acc[item.area].push(item.tech);
+
+                    return acc;
+                  }, {})
+                ).map(([area, techs]: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between gap-3">
+
+                    <span className="text-[15px] text-[#8a8a8a] font-id">
+                      {area}
+                    </span>
+
+                    <span className="text-[15px] text-black font-semibold font-id text-right capitalize">
+                      {techs.join(", ")}
+                    </span>
+
+                  </div>
+                ))
+              ) : (
+                <span className="text-[15px] text-[#8a8a8a] font-id">
+                  No technologies specified
+                </span>
+              )}
 
             </div>
           </div>

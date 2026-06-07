@@ -36,6 +36,7 @@ const CLIENT_NAV: NavItem[] = [
   { label: "Message", icon: <MessageSquare size={20} />, href: "/client/message" },
   // { label: "Projects", icon: <FolderKanban size={20} />, href: "/client/project" },
   { label: "Report Issue", icon: <MessageSquare size={20} />, href: "/client/reportissue" },
+  { label: "Assets", icon: <MessageSquare size={20} />, href: "/client/assets" },
   { label: "Payout", icon: <CreditCard size={20} />, href: "/client/account" },
   { label: "Profile", icon: <User size={20} />, href: "/client/profile" },
 ];

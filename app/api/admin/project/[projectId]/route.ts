@@ -6,6 +6,13 @@ import { deleteFile } from "@/lib/uploads";
 import { adminActionRequiredTemplate, adminForceDeletionTemplate, deletionRequestApprovedTemplate } from "@/lib/templates";
 import sendEmail from "@/lib/email";
 
+const technologySchema = z.array(
+  z.object({
+    area: z.string().min(1),
+    tech: z.string().min(1),
+  })
+);
+
 const adminUpdateSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").optional(),
   description: z.string().min(10, "Please provide a more detailed description").optional(),
@@ -17,6 +24,7 @@ const adminUpdateSchema = z.object({
   startDate: z.coerce.date().optional().nullable(),
   endDate: z.coerce.date().optional().nullable(),
   instruments: z.array(z.string()).optional(),
+  technology: technologySchema.optional(),
 });
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ projectId: string }> }) {
@@ -26,8 +34,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ proj
 
     const { projectId } = await params;
     const body = await req.json();
+    const { designSystem, action, ...projectFields } = body;
 
-    const validation = adminUpdateSchema.safeParse(body);
+    const validation = adminUpdateSchema.safeParse(projectFields);
     if (!validation.success) return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });
 
     const existingProject = await prisma.project.findUnique({ where: { id: projectId } });
@@ -41,6 +50,89 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ proj
       where: { id: projectId },
       data: validation.data
     });
+
+    let savedDesignSystem = null;
+
+    if (designSystem) {
+        savedDesignSystem =
+          await prisma.designSystem.upsert({
+            where: {
+              projectId,
+            },
+
+            update: {
+              brandName:
+                designSystem.brandName,
+
+              colors:
+                designSystem.colors,
+
+              fonts:
+                designSystem.fonts,
+
+              designType:
+                designSystem.designType,
+
+              layoutStyle:
+                designSystem.layoutStyle,
+
+              contentTone:
+                designSystem.contentTone,
+
+              visualGuidelines:
+                designSystem.visualGuidelines,
+
+              theme:
+                designSystem.theme,
+
+              brandFeel:
+                designSystem.brandFeel,
+
+              keyPages:
+                designSystem.keyPages,
+
+              uniqueness:
+                designSystem.uniqueness,
+            },
+
+            create: {
+              projectId,
+
+              brandName:
+                designSystem.brandName,
+
+              colors:
+                designSystem.colors,
+
+              fonts:
+                designSystem.fonts,
+
+              designType:
+                designSystem.designType,
+
+              layoutStyle:
+                designSystem.layoutStyle,
+
+              contentTone:
+                designSystem.contentTone,
+
+              visualGuidelines:
+                designSystem.visualGuidelines,
+
+              theme:
+                designSystem.theme,
+
+              brandFeel:
+                designSystem.brandFeel,
+
+              keyPages:
+                designSystem.keyPages,
+
+              uniqueness:
+                designSystem.uniqueness,
+            },
+          });
+      }
 
     return NextResponse.json({ success: true, message: "Project updated successfully" }, { status: 200 });
   } catch {
@@ -99,33 +191,33 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
       });
 
       await tx.projectInvitation.updateMany({
-        where: { 
-          projectId: project.id, 
-          status: { in: ["SENT", "PENDING_ADMIN"] } 
+        where: {
+          projectId: project.id,
+          status: { in: ["SENT", "PENDING_ADMIN"] }
         },
         data: { status: "EXPIRED" }
       });
 
       await tx.deadlineExtensionRequest.updateMany({
-        where: { 
-          projectId: project.id, 
-          status: "PENDING" 
+        where: {
+          projectId: project.id,
+          status: "PENDING"
         },
         data: { status: "REJECTED" }
       });
 
       await tx.ticket.updateMany({
-        where: { 
-          projectId: project.id, 
-          status: { in: ["OPEN", "IN_PROGRESS"] } 
+        where: {
+          projectId: project.id,
+          status: { in: ["OPEN", "IN_PROGRESS"] }
         },
         data: { status: "CLOSED" }
       });
 
       await tx.transaction.create({
         data: {
-          projectId: project.id, 
-          userId: project.client.userId, 
+          projectId: project.id,
+          userId: project.client.userId,
           amount: clientRefundAmount,
           type: "REFUND_CLIENT",
           status: "PENDING"
@@ -148,21 +240,21 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
 
     // delete files
     const fileUrlsToDelete: string[] = [];
-    
+
     project.resources.forEach(r => {
       if (r.type === "FILE" || r.type === "IMAGE") fileUrlsToDelete.push(r.content);
     });
-    
+
     project.milestones.forEach(m => {
       if (m.type !== "LINK" && m.content) fileUrlsToDelete.push(m.content);
     });
-    
+
     if (project.kanbanTasks) {
       project.kanbanTasks.forEach(task => {
         if (task.attachments) fileUrlsToDelete.push(...task.attachments);
       });
     }
-    
+
     if (project.tickets) {
       project.tickets.forEach(ticket => {
         if (ticket.images) fileUrlsToDelete.push(...ticket.images);
@@ -173,18 +265,18 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
     const emailPromises = [];
 
     if (clientUser.email) {
-      const clientEmailHtml = clientRequested 
+      const clientEmailHtml = clientRequested
         ? deletionRequestApprovedTemplate(clientUser.name || "Client", project.title, clientRefundAmount, false)
         : adminForceDeletionTemplate(clientUser.name || "Client", project.title, clientRefundAmount, false);
-        
+
       emailPromises.push(sendEmail(clientUser.email, `Project Cancelled: ${project.title}`, clientEmailHtml));
     }
 
     if (engineerUser && engineerUser.email) {
-      const engEmailHtml = clientRequested 
+      const engEmailHtml = clientRequested
         ? deletionRequestApprovedTemplate(engineerUser.name || "Engineer", project.title, engineerCompensationAmount, true)
         : adminForceDeletionTemplate(engineerUser.name || "Engineer", project.title, engineerCompensationAmount, true);
-        
+
       emailPromises.push(sendEmail(engineerUser.email, `Notice: Project Cancelled: ${project.title}`, engEmailHtml));
     }
 
@@ -194,12 +286,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
     }
 
     const externalTasks = [];
-    
+
     if (fileUrlsToDelete.length > 0) {
       const deletePromises = fileUrlsToDelete.map(url => deleteFile(url));
       externalTasks.push(...deletePromises);
     }
-    
+
     externalTasks.push(...emailPromises);
 
     await Promise.allSettled(externalTasks);

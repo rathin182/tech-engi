@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {``
     if (status !== "ALL") {
       whereClause.status = status;
     } else {
-      whereClause.status = { notIn: ["DRAFT", "AWAITING_ADVANCE"] };
+      whereClause.status = { notIn: ["DRAFT",] };
     }
 
     if (search.trim() !== "") {
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {``
         orderBy: { createdAt: "desc" },
       }),
       prisma.project.count({ where: whereClause }),
-      prisma.project.count({ where: { status: { notIn: ["DRAFT", "AWAITING_ADVANCE"] } } }),
+      prisma.project.count({ where: { status: { notIn: ["DRAFT"] } } }),
       prisma.project.count({ where: { status: { in: ["IN_PROGRESS", "IN_REVIEW", "SEARCHING"] } } }),
       prisma.project.count({ where: { status: "COMPLETED" } })
     ]);
@@ -64,7 +64,9 @@ export async function GET(req: NextRequest) {``
       }
     }, { status: 200 });
 
-  } catch {
+  } catch (error: any) {
+    console.log(error.message);
+    
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

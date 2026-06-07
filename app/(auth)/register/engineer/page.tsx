@@ -18,7 +18,7 @@ import {
 
 export default function EngineerRegisterPage() {
   const router = useRouter();
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -319,19 +319,6 @@ export default function EngineerRegisterPage() {
                       </button>
                     </div>
                   </div>
-
-                  {/* <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700 ml-1">OTP</label>
-                    <input
-                      type="text"
-                      required
-                      maxLength={6}
-                      value={otpCode}
-                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                      placeholder="••••••"
-                      className="w-full pl-11 pr-11 h-12 rounded-xl border border-gray-200 bg-transparent focus:bg-white focus:border-[#f0b31e] focus:ring-1 focus:ring-[#f0b31e] outline-none transition-all text-sm text-black"
-                    />
-                  </div> */}
                 </div>
 
                 <button

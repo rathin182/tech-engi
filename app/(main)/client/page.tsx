@@ -164,43 +164,60 @@ const ClientAnalyticsDashboard = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map(project => (
-            <div
-              key={project.id}
-              onClick={() => { setProjectId(project.id); setShowProjects(false); window.history.pushState({}, '', `?projectId=${project.id}`); }}
-              className="group cursor-pointer relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 group-hover:border-blue-300 dark:group-hover:border-blue-600"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 flex-1">
-                  {project.title}
-                </h3>
-                <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full border whitespace-nowrap ${PRIORITY_COLOR[project.priority] ?? 'bg-gray-100/20 text-gray-500 border-gray-200'}`}>
-                  {
-                    project.endDate
-                      ? new Date() > new Date(project.endDate) &&
-                        !["COMPLETED", "CANCELED", "AWAITING_FINAL_PAYMENT"].includes(project.status)
-                        ? "Delayed"
-                        : project.status
-                      : "-"
-                  }
-                </span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{project.description || 'No summary available'}</p>
-              <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mb-3">
-                <Calendar size={16} />
-                <span>{new Date(project.createdAt).toLocaleDateString()}</span>
-              </div>
-              <div className="mb-3">
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Progress</span>
-                  <span className="font-semibold">{project.progress}%</span>
+          {filteredProjects.map(project => {
+
+            const displayStatus = project.endDate
+              ? new Date() > new Date(project.endDate) &&
+                !["COMPLETED", "CANCELED", "AWAITING_FINAL_PAYMENT"].includes(project.status)
+                ? "Delayed"
+                : project.status
+              : "-";
+
+            const statusColor =
+              displayStatus === "Delayed"
+                ? "bg-red-100 text-red-700 border-red-200"
+                : displayStatus === "COMPLETED"
+                  ? "bg-green-100 text-green-700 border-green-200"
+                  : displayStatus === "CANCELED"
+                    ? "bg-gray-100 text-gray-700 border-gray-200"
+                    : displayStatus === "AWAITING_FINAL_PAYMENT"
+                      ? "bg-blue-100 text-blue-700 border-blue-200"
+                      : displayStatus === "IN_PROGRESS"
+                        ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                        : "bg-purple-100 text-purple-700 border-purple-200";
+
+            return (
+              <div
+                key={project.id}
+                onClick={() => { setProjectId(project.id); setShowProjects(false); window.history.pushState({}, '', `?projectId=${project.id}`); }}
+                className="group cursor-pointer relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 group-hover:border-blue-300 dark:group-hover:border-blue-600"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 flex-1">
+                    {project.title}
+                  </h3>
+                  <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full border whitespace-nowrap ${statusColor}`}>
+                    {displayStatus}
+                  </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, project.progress))}%` }} />
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{project.description || 'No summary available'}</p>
+                <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  <Calendar size={16} />
+                  <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className="mb-3">
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <span>Progress</span>
+                    <span className="font-semibold">{project.progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, project.progress))}%` }} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+
+          })}
         </div>
       )}
 

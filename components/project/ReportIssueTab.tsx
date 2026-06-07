@@ -133,14 +133,14 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
   const isClient = role === "CLIENT";
   const [newTicket, setNewTicket] = useState({
     issueType: "",
-    target: role === "ADMIN" ? "Engineer" : "PLATFORM",
+    target: role === "ADMIN" ? "Engineer" : isEngineer ? "Platform":"Engineer",
     description: "",
     images: [] as File[],
   });
 
   const [activeTab, setActiveTab] = useState("ME");
 
-  const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : ["ME", "ENGINEER", "CLIENT", "ADMIN"];
+  const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : role === "CLIENT"? ["ME", "ENGINEER", "ADMIN"]: ["ME", "ADMIN", "CLIENT"];
 
   const fetchTickets = async () => {
     try {
@@ -274,7 +274,7 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
       </div>
     );
 
-  const targetOptions = role === "ADMIN" ? ["Engineer"] : ["PLATFORM", "CLIENT"];
+  const targetOptions = role === "ADMIN" ? ["Engineer"] : role === "ENGINEER" ? ["Platform", "Client"] : ["Engineer", "Admin"];
 
 
   return (
@@ -533,23 +533,6 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
 
 
       </div>
-
-
-      {/* {showClientIssueModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white w-full max-w-md p-6 rounded-xl border border-[var(--border)] shadow-lg">
-            <h3 className="text-lg font-semibold  mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}><Shield size={18} className="text-red-500" /> Report Client Issue</h3>
-            <input type="text" value={clientIssueTitle} onChange={(e) => setClientIssueTitle(e.target.value)} className={`${inputCls} mb-3`} placeholder="Enter client issue title..." disabled={creatingClientIssue} />
-            <p className="text-xs  p-3 rounded-lg bg-red-50 border border-red-200 text-red-700">This will be visible in the client's analytics dashboard.</p>
-            <div className="flex justify-end gap-3 mt-6">
-              <button onClick={() => { setShowClientIssueModal(false); setClientIssueTitle(""); }} className="px-4 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg  text-sm" style={{ color: "var(--text-secondary)" }}>Cancel</button>
-              <button onClick={undefined} disabled={creatingClientIssue || !clientIssueTitle.trim()} className="px-4 py-2 text-white rounded-lg  text-sm disabled:opacity-40 bg-red-500 hover:bg-red-600">
-                {creatingClientIssue ? "Reporting..." : "Report to Client"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
 
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">

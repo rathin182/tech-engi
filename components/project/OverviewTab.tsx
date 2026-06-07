@@ -11,19 +11,17 @@ import { EditModal, SubmitReviewModal, ProgressModal } from "./OverviewModals";
 export default function OverviewTab({ project }: { project: any }) {
   const { user } = useAuth();
   const { processPayment, loading: isPaying } = usePayment();
-  
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [currentProgress, setCurrentProgress] = useState(project?.progress || 0);
   const [editModel, setEditModel] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  
   // Roles
   const isAdmin = user?.role === "ADMIN";
   const isClient = user?.role === "CLIENT";
   const isEngineer = user?.role === "ENGINEER";
-  const canEditDetails = isAdmin || isClient;
+  const canEditDetails = isAdmin || isClient || isEngineer;
 
   const totalMilestones = project?.milestones?.length || 0;
   const completedMilestones = project?.milestones?.filter((m: any) => m.completed).length || 0;
@@ -64,7 +62,7 @@ export default function OverviewTab({ project }: { project: any }) {
       },
       onError: () => {
         if (isFromCompleteFlow) {
-          setTimeout(() => window.location.reload(), 1500); 
+          setTimeout(() => window.location.reload(), 1500);
         }
       },
       onDismiss: () => {
@@ -80,18 +78,18 @@ export default function OverviewTab({ project }: { project: any }) {
     try {
       const res = await fetch(`/api/client/projects/${project.id}/complete`, { method: "POST" });
       const data = await res.json();
-      
-      if (data.success) { 
-        toast.success("Project Approved! Initiating final payment..."); 
-        triggerPayment(true); 
-      } 
-      else { 
-        toast.error(data.message || "Failed to complete"); 
+
+      if (data.success) {
+        toast.success("Project Approved! Initiating final payment...");
+        triggerPayment(true);
       }
-    } catch { 
-      toast.error("Error occurred"); 
+      else {
+        toast.error(data.message || "Failed to complete");
+      }
+    } catch {
+      toast.error("Error occurred");
     } finally {
-      setUpdating(false); 
+      setUpdating(false);
     }
   };
 
@@ -111,7 +109,7 @@ export default function OverviewTab({ project }: { project: any }) {
       {showProgressModal && <ProgressModal current={currentProgress} onClose={() => setShowProgressModal(false)} onSave={handleProgressUpdate} saving={updating} />}
 
       <div className="bg-gray-50" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-        
+
         {/* LEFT COLUMN */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
@@ -124,7 +122,7 @@ export default function OverviewTab({ project }: { project: any }) {
                 </button>
               )}
             </div>
-            
+
             <div style={{ background: T.primary, borderRadius: 16, padding: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ textAlign: "center" }}>
                 <p style={{ margin: 0, fontSize: 48, fontWeight: 700, color: "#fff", lineHeight: 1 }}>
@@ -180,21 +178,21 @@ export default function OverviewTab({ project }: { project: any }) {
             {/* ACTION BUTTONS */}
             <div style={{ marginBottom: "1rem", display: "flex", gap: 10 }}>
               {isEngineer && project.status === "IN_PROGRESS" && (
-                 <button onClick={() => setShowSubmitModal(true)} style={{ padding: "8px 16px", background: T.primary, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-                   <Send size={15} /> Submit for Review
-                 </button>
+                <button onClick={() => setShowSubmitModal(true)} style={{ padding: "8px 16px", background: T.primary, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Send size={15} /> Submit for Review
+                </button>
               )}
               {/* MARK AS COMPLETED BUTTON */}
               {isClient && project.status === "IN_REVIEW" && (
-                 <button onClick={handleClientComplete} disabled={isActionDisabled} style={{ padding: "8px 16px", background: T.success, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, opacity: isActionDisabled ? 0.7 : 1 }}>
-                   <CheckCheck size={16} /> {isActionDisabled ? "Processing..." : "Mark as Completed"}
-                 </button>
+                <button onClick={handleClientComplete} disabled={isActionDisabled} style={{ padding: "8px 16px", background: T.success, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, opacity: isActionDisabled ? 0.7 : 1 }}>
+                  <CheckCheck size={16} /> {isActionDisabled ? "Processing..." : "Mark as Completed"}
+                </button>
               )}
               {/* FINAL PAYMENT BUTTON */}
               {isClient && project.status === "AWAITING_FINAL_PAYMENT" && (
-                 <button onClick={() => triggerPayment(false)} disabled={isActionDisabled} style={{ padding: "8px 16px", background: T.primary, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, opacity: isActionDisabled ? 0.7 : 1 }}>
-                   <CreditCard size={16} /> {isPaying ? "Processing..." : "Pay Final Payment"}
-                 </button>
+                <button onClick={() => triggerPayment(false)} disabled={isActionDisabled} style={{ padding: "8px 16px", background: T.primary, border: "none", borderRadius: 8, color: "#fff", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, opacity: isActionDisabled ? 0.7 : 1 }}>
+                  <CreditCard size={16} /> {isPaying ? "Processing..." : "Pay Final Payment"}
+                </button>
               )}
             </div>
 
@@ -260,28 +258,188 @@ export default function OverviewTab({ project }: { project: any }) {
                 </div>
               )}
             </div>
+
+            {project.technology && project.technology.length > 0 && (
+              <div className="mt-4">
+                <h2 className="text-base font-bold text-gray-900 mb-4">
+                  Technology Stack
+                </h2>
+
+                <div className="flex flex-wrap gap-3">
+                  {project.technology.map((t: any, i: number) => (
+                    <div
+                      key={i}
+                      className="border border-gray-300 rounded-lg px-3 py-2 min-w-[120px]"
+                    >
+                      <p className="text-xs font-semibold text-gray-500">
+                        {t.area}
+                      </p>
+
+                      <p className="text-sm font-semibold text-gray-900">
+                        {t.tech}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DESIGN SYSTEM */}
+            {project.designSystem && (
+  <div className="mt-6">
+    <h2 className="text-base font-bold text-gray-900 mb-4">
+      Design System
+    </h2>
+
+    <div className="flex flex-col gap-5">
+      {/* BRAND NAME */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase">
+          Brand Name
+        </p>
+        <p className="text-sm font-semibold text-gray-900">
+          {project.designSystem.brandName || "-"}
+        </p>
+      </div>
+
+      {/* COLORS */}
+      {project.designSystem.colors?.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+            Colors
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {project.designSystem.colors.map((c: string, i: number) => (
+              <span
+                key={i}
+                className="px-3 py-1 rounded-full text-xs font-semibold text-black"
+                style={{ backgroundColor: c }}
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* FONTS */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase">
+          Fonts
+        </p>
+        <p className="text-sm text-gray-900">
+          Primary: {project.designSystem.fonts?.primary || "-"}
+          <br />
+          Secondary: {project.designSystem.fonts?.secondary || "-"}
+        </p>
+      </div>
+
+      {/* KEY PAGES */}
+      {project.designSystem.keyPages?.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+            Key Pages
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {project.designSystem.keyPages.map((p: string, i: number) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-600 border border-blue-200"
+              >
+                {p}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* LAYOUT STYLE */}
+      {project.designSystem.layoutStyle && (
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+            Layout Style
+          </p>
+
+          <div className="flex flex-col gap-2">
+            {Object.entries(project.designSystem.layoutStyle).map(
+              ([key, value]: any) => (
+                <div
+                  key={key}
+                  className="flex justify-between px-3 py-2 border border-gray-200 rounded-lg"
+                >
+                  <span className="text-xs font-semibold text-gray-700">
+                    {key}
+                  </span>
+                  <span className="text-xs text-gray-900">{value}</span>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* VISUAL GUIDELINES */}
+      {project.designSystem.visualGuidelines && (
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+            Visual Guidelines
+          </p>
+
+          <div className="flex flex-col gap-2">
+            {Object.entries(project.designSystem.visualGuidelines).map(
+              ([key, value]: any) => (
+                <div
+                  key={key}
+                  className="flex justify-between px-3 py-2 border border-gray-200 rounded-lg"
+                >
+                  <span className="text-xs font-semibold text-gray-700">
+                    {key}
+                  </span>
+                  <span className="text-xs text-gray-900">{value}</span>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* UNIQUENESS */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase">
+          Uniqueness
+        </p>
+        <p className="text-sm text-gray-900">
+          {project.designSystem.uniqueness?.differentiator || "-"}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
           </div>
 
           <div style={cardStyle}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: T.text, margin: "0 0 1rem" }}>Work Done History</h2>
             {project.kanbanTasks && project.kanbanTasks.length > 0 ? (
-               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                 {project.kanbanTasks.map((task: any) => (
-                    <div key={task.id} style={{ padding: "12px", border: `1px solid ${T.border}`, borderRadius: 8, background: T.bg }}>
-                       <p style={{ margin: "0 0 4px", fontSize: 14, fontWeight: 600, color: T.text }}>{task.title}</p>
-                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                         <p style={{ margin: 0, fontSize: 12, color: T.textSec, fontWeight: 500 }}>
-                           Status: <span style={{ color: T.primary }}>{task.status.replace("_", " ")}</span>
-                         </p>
-                         <p style={{ margin: 0, fontSize: 11, color: T.textMuted }}>
-                           {new Date(task.updatedAt).toLocaleDateString()}
-                         </p>
-                       </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {project.kanbanTasks.map((task: any) => (
+                  <div key={task.id} style={{ padding: "12px", border: `1px solid ${T.border}`, borderRadius: 8, background: T.bg }}>
+                    <p style={{ margin: "0 0 4px", fontSize: 14, fontWeight: 600, color: T.text }}>{task.title}</p>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <p style={{ margin: 0, fontSize: 12, color: T.textSec, fontWeight: 500 }}>
+                        Status: <span style={{ color: T.primary }}>{task.status.replace("_", " ")}</span>
+                      </p>
+                      <p style={{ margin: 0, fontSize: 11, color: T.textMuted }}>
+                        {new Date(task.updatedAt).toLocaleDateString()}
+                      </p>
                     </div>
-                 ))}
-               </div>
+                  </div>
+                ))}
+              </div>
             ) : (
-               <p style={{ fontSize: 13, color: T.textMuted }}>No recent tasks found.</p>
+              <p style={{ fontSize: 13, color: T.textMuted }}>No recent tasks found.</p>
             )}
           </div>
         </div>

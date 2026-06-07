@@ -8,13 +8,13 @@ import { useSession } from "next-auth/react";
 const QUALIFICATIONS = [
   { value: "UG", label: "Under Graduate (Student)" },
   { value: "EMPLOYED", label: "Employed" },
-  { value: "UNEMPLOYED", label: "Unemployed" },
+  { value: "AspiringEngineer", label: "Aspiring Engineer" },
 ];
 
 const ID_TYPES: Record<string, string[]> = {
   UG: ["STUDENT_ID", "AADHAAR", "PAN"],
   EMPLOYED: ["AADHAAR", "PAN", "PAY_SLIP"],
-  UNEMPLOYED: ["AADHAAR", "PAN"],
+  AspiringEngineer: ["AADHAAR", "PAN"],
 };
 
 const ID_LABELS: Record<string, string> = {
@@ -45,16 +45,29 @@ export default function EngineerFormPage() {
   const [idNumber, setIdNumber] = useState("");
   const [idFile, setIdFile] = useState<File | null>(null);
   const [yearsOfExperience, setYearsOfExperience] = useState("");
-
+  const [qualificationDetails, setqualificationDetails] = useState("");
+  const [universityName, setUniversityName] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
-
+  const [github, setGithub] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [portfolio, setPortfolio] = useState("");
+  const [achievements, setAchievements] = useState("");
   const [certifications, setCertifications] = useState<CertificateData[]>([]);
   const [certInput, setCertInput] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [preferredMethod, setPreferredMethod] = useState("UPI");
+  const [upiId, setUpiId] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
 
   const [error, setError] = useState("");
+  const [showErrors, setShowErrors] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -128,6 +141,25 @@ export default function EngineerFormPage() {
       formData.append("idNumber", cleanedId);
       formData.append("file", idFile);
       formData.append("skills", JSON.stringify(skills));
+      // Education
+      formData.append("qualificationDetails", qualificationDetails);
+      formData.append("universityName", universityName);
+
+      // Professional Links
+      formData.append("github", github);
+      formData.append("linkedin", linkedin);
+      formData.append("portfolio", portfolio);
+
+      // Achievements
+      formData.append("achievements", achievements);
+
+      // Payout Details
+      formData.append("preferredMethod", preferredMethod);
+      formData.append("upiId", upiId);
+      formData.append("accountNumber", accountNumber);
+      formData.append("ifscCode", ifscCode);
+      formData.append("bankName", bankName);
+      formData.append("accountHolder", accountHolder);
 
       const mappedCertifications = certifications.map((cert, index) => {
         formData.append(`certFile_${index}`, cert.file);
@@ -141,9 +173,10 @@ export default function EngineerFormPage() {
       });
 
       const data = await res.json();
+
       if (!res.ok || !data.success) throw new Error(data.message);
 
-      router.push("/form/payout");
+      // router.push("/form/payout");
     } catch (err: any) {
       setError(err.message);
       setIsLoading(false);
@@ -160,6 +193,22 @@ export default function EngineerFormPage() {
 
   if (status === "unauthenticated") {
     return null;
+  }
+
+  const missingFields: string[] = [];
+
+  if (!qualification) missingFields.push("Qualification");
+  if (!idType) missingFields.push("ID Type");
+
+  if (!preferredMethod) {
+    missingFields.push("Payment Method");
+  } else if (preferredMethod === "UPI") {
+    if (!upiId) missingFields.push("UPI ID");
+  } else if (preferredMethod === "BANK_TRANSFER") {
+    if (!accountNumber) missingFields.push("Account Number");
+    if (!ifscCode) missingFields.push("IFSC Code");
+    if (!bankName) missingFields.push("Bank Name");
+    if (!accountHolder) missingFields.push("Account Holder Name");
   }
 
   return (
@@ -215,187 +264,432 @@ export default function EngineerFormPage() {
               </div>
             </div>
 
-            {/* Form */}
-            <form className="space-y-6">
+            <div className="mb-8">
+              <h2 className="text-[24px] font-extrabold text-[#111827] tracking-tight">
+                {step === 1 ? "Tell us about you" : "Verify your identity"}
+              </h2>
 
-              {/* Qualification */}
-              <div className="space-y-2">
-                <label className="text-[15px] font-semibold text-[#111827]">
-                  Qualification
-                </label>
+              <p className="text-[14px] text-[#7B6A42] mt-2 leading-relaxed">
+                {step === 1
+                  ? "We use this to personalize your experience"
+                  : "This helps us keep the platform secure and trusted"}
+              </p>
+            </div>
 
-                <div className="flex gap-3">
-                  {QUALIFICATIONS.map((q) => (
-                    <button
-                      key={q.value}
-                      type="button"
-                      onClick={() => handleQualificationChange(q.value)}
-                      className={`flex-1 h-[52px] rounded-[16px] border text-[13px] font-semibold transition-all ${qualification === q.value
-                        ? "bg-[#F0B31E] text-white border-[#F0B31E] shadow-lg shadow-yellow-500/20"
-                        : "text-[#8A7440]"
-                        }`}
-                    >
-                      {q.label}
-                    </button>
-                  ))}
-                </div>
+            {showErrors && missingFields.length > 0 && (
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3">
+                <p className="text-sm font-medium text-red-600">
+                  Please complete the following required fields:
+                </p>
+
+                <p className="mt-1 text-sm text-red-500">
+                  {missingFields.join(", ")}
+                </p>
               </div>
+            )}
 
-              {/* Experience */}
-              <div className="space-y-2">
-                <label className="text-[15px] font-semibold text-[#111827]">
-                  Years of Experience
-                </label>
+            {step === 1 && (
+              <div className="space-y-6">
 
-                <select
-                  value={yearsOfExperience}
-                  onChange={(e) => setYearsOfExperience(e.target.value)}
-                  className="w-full h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none focus:border-[#F0B31E]"
-                >
-                  <option value="" disabled>
-                    Select experience level
-                  </option>
-
-                  {EXPERIENCE_LEVELS.map((exp) => (
-                    <option key={exp.value} value={exp.value}>
-                      {exp.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* ID Type */}
-              {qualification && (
+                {/* Qualification */}
                 <div className="space-y-2">
                   <label className="text-[15px] font-semibold text-[#111827]">
-                    ID Type
+                    Qualification*
                   </label>
 
-                  <div className="flex flex-wrap gap-3">
-                    {ID_TYPES[qualification].map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => {
-                          setIdType(type);
-                          setIdNumber("");
-                          setError("");
-                        }}
-                        className={`px-5 h-[46px] rounded-[16px] border text-[12px] font-semibold transition-all ${idType === type
-                          ? "bg-[#F0B31E] text-white border-[#F0B31E] shadow-lg shadow-yellow-500/20"
-                          : " text-[#8A7440]"
-                          }`}
-                      >
-                        {ID_LABELS[type]}
-                      </button>
-                    ))}
+                  <div className="flex gap-3">
+                    <input type="text"
+                      value={qualificationDetails}
+                      onChange={(e) => setqualificationDetails(e.target.value)}
+                      placeholder="Enter your qualification e.g. B.Tech"
+                      className="flex-1 h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                    />
                   </div>
                 </div>
-              )}
 
-              {/* ID Number */}
-              <div className="space-y-2">
-                <label className="text-[15px] font-semibold text-[#111827]">
-                  ID Number
-                </label>
+                {/* collage / School Name */}
+                {qualificationDetails && (
+                  <div>
+                    <div className="space-y-2">
+                      <label className="text-[15px] font-semibold text-[#111827]">
+                        University Name*
+                      </label>
 
-                <input
-                  type="text"
-                  required
-                  value={idNumber}
-                  onChange={(e) => setIdNumber(e.target.value.toUpperCase())}
-                  placeholder={
-                    idType === "PAN"
-                      ? "ABCDE1234F"
-                      : idType === "AADHAAR"
-                        ? "12 Digit Number"
-                        : "Enter your ID number"
-                  }
-                  className="w-full h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
-                />
-              </div>
+                      <div className="flex gap-3">
+                        <input type="text"
+                          value={universityName}
+                          onChange={(e) => setUniversityName(e.target.value)}
+                          placeholder="Enter your Collage Name"
+                          className="flex-1 h-14 px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-              {/* Upload */}
-              <div className="space-y-2">
-                <label className="text-[15px] font-semibold text-[#111827]">
-                  Upload ID Document
-                </label>
+                {/* Experience */}
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-[#111827]">
+                    Years of Experience*
+                  </label>
 
-                <label className="w-full h-[56px] rounded-[16px] border flex items-center px-5 cursor-pointer">
+                  <select
+                    value={yearsOfExperience}
+                    onChange={(e) => setYearsOfExperience(e.target.value)}
+                    className="w-full h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none focus:border-[#F0B31E]"
+                  >
+                    <option value="" disabled>
+                      Select experience level
+                    </option>
 
-                  <Upload className="h-4 w-4 text-[#B08D32]" />
+                    {EXPERIENCE_LEVELS.map((exp) => (
+                      <option key={exp.value} value={exp.value}>
+                        {exp.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                  <span className="ml-3 text-[#8A7440] text-[13px] truncate">
-                    {idFile ? idFile.name : "Click to upload (JPG, PNG, PDF)"}
-                  </span>
+                {/* GitHub */}
+                <div>
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      GitHub
+                    </label>
 
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => setIdFile(e.target.files?.[0] || null)}
-                  />
-                </label>
-              </div>
+                    <div className="flex gap-3">
+                      <input type="text"
+                        value={github}
+                        onChange={(e) => setGithub(e.target.value)}
+                        placeholder="Enter your Github link"
+                        className="flex-1 h-14 px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-              {/* Skills */}
-              <div className="space-y-2">
-                <label className="text-[15px] font-semibold text-[#111827]">
-                  Skills
-                </label>
+                {/* Linkedin */}
+                <div>
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      Linkedin
+                    </label>
 
-                <div className="flex gap-3">
+                    <div className="flex gap-3">
+                      <input type="text"
+                        value={linkedin}
+                        onChange={(e) => setLinkedin(e.target.value)}
+                        placeholder="Enter your linkedin link"
+                        className="flex-1 h-14 px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Portfolio */}
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-[#111827]">
+                    Portfolio
+                  </label>
+
+                  <div className="flex gap-3">
+                    <input type="text"
+                      value={portfolio}
+                      onChange={(e) => setPortfolio(e.target.value)}
+                      placeholder="Enter your Portfolio link"
+                      className="flex-1 h-14 px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Achievements */}
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-[#111827]">
+                    Achievements
+                  </label>
+
                   <input
                     type="text"
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addSkill();
-                      }
-                    }}
-                    placeholder="e.g. Arduino, PCB Design"
-                    className="flex-1 h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                    value={achievements}
+                    onChange={(e) => setAchievements(e.target.value)}
+                    placeholder="Hackathon Winner, AWS Certified, Open Source Contributor"
+                    className="w-full h-14 px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
                   />
 
-                  <button
-                    type="button"
-                    onClick={addSkill}
-                    className="w-[56px] h-[56px] rounded-[16px] bg-[#F0B31E] text-white flex items-center justify-center shadow-lg shadow-yellow-500/25"
-                  >
-                    <Plus className="h-5 w-5" />
-                  </button>
+                  <div className="flex items-center gap-2 pl-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#F0B31E]" />
+                    <p className="text-[12px] text-[#8A7440]">
+                      Separate multiple achievements using commas (,)
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={isLoading || !qualification || !idType}
-                className="
-    w-full
-    h-[62px]
-    mt-7
-    rounded-[18px]
-    bg-[#F0B31E]
-    hover:bg-[#DE9F08]
-    text-white
-    text-[19px]
-    font-semibold
-    transition-all
-    shadow-[0_10px_30px_rgba(240,179,30,0.35)]
-    disabled:opacity-60
-    disabled:cursor-not-allowed
-  "
-              >
-                {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin mx-auto" />
-                ) : (
-                  "Sign in"
-                )}
-              </button>
-            </form>
+                {/* NEXT BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep(2)
+                  }}
+                  disabled={!qualificationDetails || !yearsOfExperience || !universityName}
+                  className="w-full h-[62px] mt-7 rounded-[18px] bg-[#F0B31E] text-white text-[19px] font-semibold"
+                >
+                  Continue
+                </button>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+
+                  {/* Qualification */}
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      Qualification
+                    </label>
+
+                    <div className="flex gap-3">
+                      {QUALIFICATIONS.map((q) => (
+                        <button
+                          key={q.value}
+                          type="button"
+                          onClick={() => handleQualificationChange(q.value)}
+                          className={`flex-1 h-[52px] rounded-[16px] border text-[13px] font-semibold transition-all ${qualification === q.value
+                            ? "bg-[#F0B31E] text-white border-[#F0B31E] shadow-lg shadow-yellow-500/20"
+                            : "text-[#8A7440]"
+                            }`}
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Experience */}
+                  {/* <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      Years of Experience
+                    </label>
+
+                    <select
+                      value={yearsOfExperience}
+                      onChange={(e) => setYearsOfExperience(e.target.value)}
+                      className="w-full h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none focus:border-[#F0B31E]"
+                    >
+                      <option value="" disabled>
+                        Select experience level
+                      </option>
+
+                      {EXPERIENCE_LEVELS.map((exp) => (
+                        <option key={exp.value} value={exp.value}>
+                          {exp.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div> */}
+
+                  {/* ID Type */}
+                  {qualification && (
+                    <div className="space-y-2">
+                      <label className="text-[15px] font-semibold text-[#111827]">
+                        ID Type
+                      </label>
+
+                      <div className="flex flex-wrap gap-3">
+                        {ID_TYPES[qualification].map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => {
+                              setIdType(type);
+                              setIdNumber("");
+                              setError("");
+                            }}
+                            className={`px-5 h-[46px] rounded-[16px] border text-[12px] font-semibold transition-all ${idType === type
+                              ? "bg-[#F0B31E] text-white border-[#F0B31E] shadow-lg shadow-yellow-500/20"
+                              : " text-[#8A7440]"
+                              }`}
+                          >
+                            {ID_LABELS[type]}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ID Number */}
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      ID Number
+                    </label>
+
+                    <input
+                      type="text"
+                      required
+                      value={idNumber}
+                      onChange={(e) => setIdNumber(e.target.value.toUpperCase())}
+                      placeholder={
+                        idType === "PAN"
+                          ? "ABCDE1234F"
+                          : idType === "AADHAAR"
+                            ? "12 Digit Number"
+                            : "Enter your ID number"
+                      }
+                      className="w-full h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                    />
+                  </div>
+
+                  {/* Upload */}
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      Upload ID Document
+                    </label>
+
+                    <label className="w-full h-[56px] rounded-[16px] border flex items-center px-5 cursor-pointer">
+
+                      <Upload className="h-4 w-4 text-[#B08D32]" />
+
+                      <span className="ml-3 text-[#8A7440] text-[13px] truncate">
+                        {idFile ? idFile.name : "Click to upload (JPG, PNG, PDF)"}
+                      </span>
+
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => setIdFile(e.target.files?.[0] || null)}
+                      />
+                    </label>
+                  </div>
+
+                  {/* Skills */}
+
+                  <div className="space-y-2">
+                    <label className="text-[15px] font-semibold text-[#111827]">
+                      Skills
+                    </label>
+
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        value={skillInput}
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addSkill();
+                          }
+                        }}
+                        placeholder="e.g. Arduino, PCB Design"
+                        className="flex-1 h-[56px] px-5 rounded-[16px] border text-[#8A7440] text-[14px] outline-none"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={addSkill}
+                        className="w-[56px] h-[56px] rounded-[16px] bg-[#F0B31E] text-white flex items-center justify-center shadow-lg shadow-yellow-500/25"
+                      >
+                        <Plus className="h-5 w-5" />
+                      </button>
+                    </div>
+
+                    {/* Skills Tags */}
+                    {skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {skills.map((skill, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 px-3 py-2 rounded-full bg-[#FFF8E7] border border-[#F3D37A]"
+                          >
+                            <span className="text-[13px] font-medium text-[#8A7440]">
+                              {skill}
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSkills(skills.filter((_, i) => i !== index))
+                              }
+                              className="text-[#B08D32] hover:text-red-500 transition-colors"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 border-2 border-[var(--primary)] bg-[#fff4e6]/30 rounded-xl">
+                    <label className="block text-sm font-bold text-[var(--text-primary)] mb-3">Which method do you prefer to use?</label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 font-semibold text-sm cursor-pointer">
+                        <input type="radio" name="preference" checked={preferredMethod === "UPI"} onChange={() => setPreferredMethod("UPI")} className="accent-[var(--primary)] w-4 h-4" /> UPI Transfer
+                      </label>
+                      <label className="flex items-center gap-2 font-semibold text-sm cursor-pointer">
+                        <input type="radio" name="preference" checked={preferredMethod === "BANK"} onChange={() => setPreferredMethod("BANK")} className="accent-[var(--primary)] w-4 h-4" /> Bank Account
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h5 className="font-bold border-b pb-2">UPI Details</h5>
+                    <input value={upiId} onChange={e => setUpiId(e.target.value)} required={preferredMethod === "UPI"} placeholder="yourname@bank" className="w-full border border-[var(--border)] rounded-lg p-2.5 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h5 className="font-bold border-b pb-2">Bank Account Details</h5>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2">
+                        <label className="text-xs font-semibold mb-1 block">Account Holder Name</label>
+                        <input value={accountHolder} onChange={e => setAccountHolder(e.target.value)} required={preferredMethod === "BANK"} className="w-full border rounded-lg p-2.5 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="text-xs font-semibold mb-1 block">Account Number</label>
+                        <input value={accountNumber} onChange={e => setAccountNumber(e.target.value)} required={preferredMethod === "BANK"} className="w-full border rounded-lg p-2.5 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="text-xs font-semibold mb-1 block">IFSC Code</label>
+                        <input value={ifscCode} onChange={e => setIfscCode(e.target.value)} required={preferredMethod === "BANK"} className="w-full border rounded-lg p-2.5 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+                      </div>
+                      <div className="col-span-2">
+                        <label className="text-xs font-semibold mb-1 block">Bank Name</label>
+                        <input value={bankName} onChange={e => setBankName(e.target.value)} required={preferredMethod === "BANK"} className="w-full border rounded-lg p-2.5 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    onClick={(e) => {
+                      if (
+                        !qualification ||
+                        !idType ||
+                        !preferredMethod ||
+                        (preferredMethod === "UPI" && !upiId) ||
+                        (preferredMethod === "BANK_TRANSFER" &&
+                          (!accountNumber || !ifscCode || !bankName || !accountHolder))
+                      ) {
+                        e.preventDefault();
+                        setShowErrors(true);
+                        return;
+                      }
+
+                      setShowErrors(false);
+                    }}
+                    className="w-full h-[62px] cursor-pointer mt-7 rounded-[18px] bg-[#F0B31E] hover:bg-[#DE9F08] text-white text-[19px] font-semibold transition-all shadow-[0_10px_30px_rgba(240,179,30,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                    ) : (
+                      "Sign in"
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </div>

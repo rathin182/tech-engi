@@ -52,18 +52,13 @@ export async function GET(req: NextRequest) {
     }
 
     // BUG FIX #4: Run queries in correct order and handle errors
-    const [
-      projects,
-      totalFilteredCount,
-      totalProjects,
-      activeProjects,
-      completedProjects,
-    ] = await Promise.all([
+    const [ projects, totalFilteredCount, totalProjects, activeProjects, completedProjects,] = await Promise.all([
       prisma.project.findMany({
         where: whereClause,
         skip,
         take: limit,
         include: {
+          resources:true,
           engineer: {
             include: { user: { select: { name: true, image: true } } },
           },
@@ -97,6 +92,7 @@ export async function GET(req: NextRequest) {
       createdAt: project.createdAt.toISOString(),
       status: project.status,
       engineer: project.engineer?.user?.name || null,
+      resources: project.resources
     }));
 
     return NextResponse.json(

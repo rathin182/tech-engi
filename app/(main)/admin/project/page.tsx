@@ -23,7 +23,6 @@ interface Project {
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
   DRAFT: { label: "Draft", color: "bg-gray-100 text-gray-600" },
-  AWAITING_ADVANCE: { label: "Awaiting Advance", color: "bg-yellow-100 text-yellow-700" },
   SEARCHING: { label: "Searching Engineer", color: "bg-blue-100 text-blue-700" },
   IN_PROGRESS: { label: "In Progress", color: "bg-green-100 text-green-700" },
   IN_REVIEW: { label: "In Review", color: "bg-purple-100 text-purple-700" },
@@ -33,7 +32,6 @@ const STATUS_META: Record<string, { label: string; color: string }> = {
 };
 
 function StatusBadge({ status }: { status: string }) {
-  if (status === "AWAITING_ADVANCE") return null;
   const meta = STATUS_META[status] ?? { label: status, color: "bg-gray-100 text-gray-600" };
   return (
     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${meta.color}`}>

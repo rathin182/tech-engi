@@ -46,6 +46,34 @@ const engineerProfileSchema = z.object({
     "FIVE_TO_EIGHT_YEARS",
     "EIGHT_PLUS_YEARS"
   ]).optional().nullable(),
+
+  // Education
+  qualificationDetails: z.string().min(2, "Qualification details are required"),
+
+  universityName: z.string().min(2, "University name is required"),
+
+  // Professional Links
+  github: z.string().optional().nullable(),
+
+  linkedin: z.string().optional().nullable(),
+
+  portfolio: z.string().optional().nullable(),
+
+  // Achievements
+  achievements: z.string().optional().nullable(),
+
+  // Payout Details
+  preferredMethod: z.enum(["UPI", "BANK_TRANSFER"]),
+
+  upiId: z.string().optional().nullable(),
+
+  accountNumber: z.string().optional().nullable(),
+
+  ifscCode: z.string().optional().nullable(),
+
+  bankName: z.string().optional().nullable(),
+
+  accountHolder: z.string().optional().nullable(),
 });
 
 export async function POST(req: NextRequest) {
@@ -56,27 +84,63 @@ export async function POST(req: NextRequest) {
     }
 
     if (user.engineerProfile) {
+      console.log("this is the error 3");
+      
       return NextResponse.json({ success: false, message: "Profile already exists" }, { status: 400 });
     }
 
     const formData = await req.formData();
 
+    const Data = {
+  qualification: formData.get("qualification"),
+  yearsOfExperience: formData.get("yearsOfExperience"),
+  idType: formData.get("idType"),
+  idNumber: formData.get("idNumber"),
+
+  skills: JSON.parse(formData.get("skills") as string),
+
+  certifications: JSON.parse(
+    (formData.get("certifications") as string) || "[]"
+  ),
+
+  qualificationDetails: formData.get("qualificationDetails"),
+  universityName: formData.get("universityName"),
+
+  github: formData.get("github"),
+  linkedin: formData.get("linkedin"),
+  portfolio: formData.get("portfolio"),
+
+  achievements: formData.get("achievements"),
+
+  preferredMethod: formData.get("preferredMethod"),
+
+  upiId: formData.get("upiId"),
+  accountNumber: formData.get("accountNumber"),
+  ifscCode: formData.get("ifscCode"),
+  bankName: formData.get("bankName"),
+  accountHolder: formData.get("accountHolder"),
+};
+
     const idFile = formData.get("file") as File;
     if (!idFile) {
+      console.log("this is the error2");
       return NextResponse.json({ success: false, message: "ID Image is required" }, { status: 400 });
     }
 
-    const data = {
-      qualification: formData.get("qualification"),
-      idType: formData.get("idType"),
-      idNumber: formData.get("idNumber"),
-      skills: JSON.parse(formData.get("skills") as string || "[]"),
-      certifications: JSON.parse(formData.get("certifications") as string || "[]"),
-      yearsOfExperience: formData.get("yearsOfExperience") || null,
-    };
+    // const data = {
+    //   qualification: formData.get("qualification"),
+    //   idType: formData.get("idType"),
+    //   idNumber: formData.get("idNumber"),
+    //   skills: JSON.parse(formData.get("skills") as string || "[]"),
+    //   certifications: JSON.parse(formData.get("certifications") as string || "[]"),
+    //   yearsOfExperience: formData.get("yearsOfExperience") || null,
+    // };
+console.log(Data);
 
-    const validation = engineerProfileSchema.safeParse(data);
+    const validation = engineerProfileSchema.safeParse(Data);
     if (!validation.success) {
+      console.log("error");
+      
       return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });
     }
 
@@ -95,18 +159,70 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // const newProfile = await prisma.engineerProfile.create({
+    //   data: {
+    //     userId: user.id,
+    //     status: "PENDING",
+    //     qualification: validation.data.qualification,
+    //     idType: validation.data.idType,
+    //     idNumber: validation.data.idNumber,
+    //     idFile: idFileUrl,
+    //     skills: validation.data.skills,
+    //     certifications: finalCertifications,
+    //     yearsOfExperience: validation.data.yearsOfExperience || null,
+    //   }
+    // });
+
     const newProfile = await prisma.engineerProfile.create({
       data: {
         userId: user.id,
         status: "PENDING",
+
         qualification: validation.data.qualification,
+        qualificationType: validation.data.qualificationDetails,
+
+        university: validation.data.universityName,
+
         idType: validation.data.idType,
         idNumber: validation.data.idNumber,
         idFile: idFileUrl,
+
+        github: validation.data.github || null,
+        portfolio: validation.data.portfolio || null,
+        linkedin: validation.data.linkedin || null,
+
+        achievements: validation.data.achievements
+          ? validation.data.achievements
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
+          : [],
+
         skills: validation.data.skills,
+
         certifications: finalCertifications,
-        yearsOfExperience: validation.data.yearsOfExperience || null,
-      }
+
+        yearsOfExperience:
+          validation.data.yearsOfExperience || null,
+      },
+    });
+
+    const payoutData = {
+      preferredMethod: validation.data.preferredMethod,
+      upiId: validation.data.upiId || null,
+      accountNumber: validation.data.accountNumber || null,
+      ifscCode: validation.data.ifscCode || null,
+      bankName: validation.data.bankName || null,
+      accountHolder: validation.data.accountHolder || null,
+    };
+
+    await prisma.payoutDetail.upsert({
+      where: { userId: user.id },
+      update: payoutData,
+      create: {
+        userId: user.id,
+        ...payoutData,
+      },
     });
 
     generateEmbedding(`Skills: ${validation.data.skills.join(", ")}`)
@@ -121,7 +237,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Profile created successfully" }, { status: 201 });
 
-  } catch {
+  } catch (error : any) {
+    console.log(error.message);
+    
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
