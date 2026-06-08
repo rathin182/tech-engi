@@ -75,7 +75,6 @@ export const EditModal = ({ showModel, projectData, userRole }: { showModel: (v:
     try {
       const payload: any = { projectId: projectData.id, ...formData, instruments, techArea, techName, colorInput, technology, designSystem, action };
       if (!isAdmin) { delete payload.repository; delete payload.budget; }
-      console.log(payload);
 
       const res = await fetch(`${apiBase}/${projectData.id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload,),
@@ -124,9 +123,6 @@ export const EditModal = ({ showModel, projectData, userRole }: { showModel: (v:
 
     setKeyPagesInput((ds.keyPages ?? []).join(", "));
   }, [projectData]);
-
-  console.log(projectData, "ProjectData");
-
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(5,10,48,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "1rem" }}>

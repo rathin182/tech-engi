@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json( { success: false, message: "Project not found" }, { status: 404 } );
     }
 
-    if (project.status !== "DRAFT" && project.status !== "IN_PROGRESS" && project.status !== "AWAITING_FINAL_PAYMENT") {
+    if (project.status !== "DRAFT" && project.status !== "AWAITING_FINAL_PAYMENT") {
       return NextResponse.json( { success: false, message: "Project is not ready for payment" }, { status: 400 });
     }
 

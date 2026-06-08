@@ -84,7 +84,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (user.engineerProfile) {
-      console.log("this is the error 3");
       
       return NextResponse.json({ success: false, message: "Profile already exists" }, { status: 400 });
     }
@@ -123,7 +122,6 @@ export async function POST(req: NextRequest) {
 
     const idFile = formData.get("file") as File;
     if (!idFile) {
-      console.log("this is the error2");
       return NextResponse.json({ success: false, message: "ID Image is required" }, { status: 400 });
     }
 
@@ -135,11 +133,9 @@ export async function POST(req: NextRequest) {
     //   certifications: JSON.parse(formData.get("certifications") as string || "[]"),
     //   yearsOfExperience: formData.get("yearsOfExperience") || null,
     // };
-console.log(Data);
 
     const validation = engineerProfileSchema.safeParse(Data);
     if (!validation.success) {
-      console.log("error");
       
       return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });
     }
@@ -238,7 +234,6 @@ console.log(Data);
     return NextResponse.json({ success: true, message: "Profile created successfully" }, { status: 201 });
 
   } catch (error : any) {
-    console.log(error.message);
     
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }

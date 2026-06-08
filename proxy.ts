@@ -15,6 +15,7 @@ export async function proxy(req: NextRequest) {
     "/register",
     "/register/client",
     "/register/engineer",
+    "/forgot-password",
   ];
 
   if (token && authPages.includes(pathname)) {
@@ -52,5 +53,6 @@ export const config = {
     "/register",
     "/register/client",
     "/register/engineer",
+    "/forgot-password",
   ],
 };

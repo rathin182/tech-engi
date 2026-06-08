@@ -90,7 +90,9 @@ const ClientReportIssue = () => {
         } catch (err: any) {
             toast.error(err.message);
         } finally {
+            setShowModal(false);
             setCreating(false);
+            
         }
     };
 
@@ -145,7 +147,7 @@ const ClientReportIssue = () => {
         fetchTickets();
     }, []);
 
-    const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : ["ME", "ENGINEER", "CLIENT", "ADMIN"];
+    const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : ["ME", "ENGINEER", "ADMIN"];
 
     const inputCls = "w-full px-3 py-2 rounded-lg bg-white border border-[var(--border)]  text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]";
 
@@ -191,7 +193,7 @@ const ClientReportIssue = () => {
             </div>
         );
 
-    const targetOptions = role === "ADMIN" ? ["Engineer"] : ["PLATFORM", "CLIENT"];
+    const targetOptions = role === "ADMIN" ? ["Engineer"] : ["PLATFORM", "ENGINEER"];
 
     return (
         <div className="h-full w-full">

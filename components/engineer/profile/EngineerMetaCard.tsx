@@ -3,17 +3,12 @@
 import React, { useRef, useState } from "react";
 import { Camera } from "lucide-react";
 
-export default function EngineerMetaCard({
-  user,
-}: {
-  user: any;
-}) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [image, setImage] = useState(user?.image);
+export default function EngineerMetaCard({ user, }: { user: any; }) {
 
   if (!user) return null;
-
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState(user?.image);
   const handleUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {

@@ -4,7 +4,6 @@ import { Download, FileText, Receipt, Wallet, ArrowDownCircle } from 'lucide-rea
 
 const BudgetAndDocs = ({ data, tasks, projects, }: { data: any; tasks: any[]; projects: any[]; }) => {
   if (!data) return null;
-  
 
   const { paidAmount = 0, remainingAmount = 0, totalBudget = 0, docs = [] } = data;
 

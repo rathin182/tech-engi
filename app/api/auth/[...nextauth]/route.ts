@@ -28,16 +28,14 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing email or password");
         }
-
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email,
+            email: credentials.email ,
           },
           include: {
             engineerProfile: true,
           },
         });
-console.log(user);
 
         if (!user) throw new Error("Invalid password or email");
         if (user.isSuspended) throw new Error("Your account has been suspended.");
@@ -87,20 +85,33 @@ console.log(user);
     },
 
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
+      try {
+        if (user) {
+          token.id = user.id;
+        }
 
-      if (token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string }
-        });
-        if (dbUser) token.role = dbUser.role;
-      }
+        if (token.id) {
+          const dbUser = await prisma.user.findUnique({
+            where: {
+              id: String(token.id),
+            },
+          });
 
-      return token;
+          if (dbUser) {
+            token.role = dbUser.role;
+          }
+        }
+
+        return token;
+      } catch (error) {
+        console.error(
+          "JWT CALLBACK ERROR:",
+          JSON.stringify(error, null, 2)
+        );
+
+        throw error;
+      }
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;

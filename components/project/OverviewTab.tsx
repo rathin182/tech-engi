@@ -286,137 +286,186 @@ export default function OverviewTab({ project }: { project: any }) {
 
             {/* DESIGN SYSTEM */}
             {project.designSystem && (
-  <div className="mt-6">
-    <h2 className="text-base font-bold text-gray-900 mb-4">
-      Design System
-    </h2>
+              <div className="mt-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-5">
+                  Design System
+                </h2>
 
-    <div className="flex flex-col gap-5">
-      {/* BRAND NAME */}
-      <div>
-        <p className="text-xs font-semibold text-gray-500 uppercase">
-          Brand Name
-        </p>
-        <p className="text-sm font-semibold text-gray-900">
-          {project.designSystem.brandName || "-"}
-        </p>
-      </div>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
-      {/* COLORS */}
-      {project.designSystem.colors?.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-            Colors
-          </p>
+                  {/* LEFT COLUMN */}
+                  <div className="space-y-5">
 
-          <div className="flex flex-wrap gap-2">
-            {project.designSystem.colors.map((c: string, i: number) => (
-              <span
-                key={i}
-                className="px-3 py-1 rounded-full text-xs font-semibold text-black"
-                style={{ backgroundColor: c }}
-              >
-                {c}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+                    {/* Brand */}
+                    <div className="bg-white border border-gray-200 rounded-xl p-5">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                        Brand Name
+                      </p>
 
-      {/* FONTS */}
-      <div>
-        <p className="text-xs font-semibold text-gray-500 uppercase">
-          Fonts
-        </p>
-        <p className="text-sm text-gray-900">
-          Primary: {project.designSystem.fonts?.primary || "-"}
-          <br />
-          Secondary: {project.designSystem.fonts?.secondary || "-"}
-        </p>
-      </div>
+                      <p className="text-base font-semibold text-gray-900">
+                        {project.designSystem.brandName || "-"}
+                      </p>
+                    </div>
 
-      {/* KEY PAGES */}
-      {project.designSystem.keyPages?.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-            Key Pages
-          </p>
+                    {/* Colors */}
+                    {project.designSystem.colors?.length > 0 && (
+                      <div className="bg-white border border-gray-200 rounded-xl p-5">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          Color Palette
+                        </p>
 
-          <div className="flex flex-wrap gap-2">
-            {project.designSystem.keyPages.map((p: string, i: number) => (
-              <span
-                key={i}
-                className="px-3 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-600 border border-blue-200"
-              >
-                {p}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+                        <div className="flex flex-wrap gap-3">
+                          {project.designSystem.colors.map(
+                            (color: string, index: number) => (
+                              <div
+                                key={index}
+                                className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2"
+                              >
+                                <div
+                                  className="w-5 h-5 rounded-full border border-gray-200"
+                                  style={{
+                                    backgroundColor: color,
+                                  }}
+                                />
 
-      {/* LAYOUT STYLE */}
-      {project.designSystem.layoutStyle && (
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-            Layout Style
-          </p>
+                                <span className="text-xs font-medium">
+                                  {color}
+                                </span>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
 
-          <div className="flex flex-col gap-2">
-            {Object.entries(project.designSystem.layoutStyle).map(
-              ([key, value]: any) => (
-                <div
-                  key={key}
-                  className="flex justify-between px-3 py-2 border border-gray-200 rounded-lg"
-                >
-                  <span className="text-xs font-semibold text-gray-700">
-                    {key}
-                  </span>
-                  <span className="text-xs text-gray-900">{value}</span>
+                    {/* Fonts */}
+                    <div className="bg-white border border-gray-200 rounded-xl p-5">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        Typography
+                      </p>
+
+                      <div className="space-y-3">
+
+                        <div className="grid grid-cols-[120px_1fr]">
+                          <span className="text-xs font-semibold text-gray-600">
+                            Primary Font
+                          </span>
+
+                          <span className="text-sm text-gray-900">
+                            {project.designSystem.fonts?.primary || "-"}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-[120px_1fr]">
+                          <span className="text-xs font-semibold text-gray-600">
+                            Secondary Font
+                          </span>
+
+                          <span className="text-sm text-gray-900">
+                            {project.designSystem.fonts?.secondary || "-"}
+                          </span>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    {/* Key Pages */}
+                    {project.designSystem.keyPages?.length > 0 && (
+                      <div className="bg-white border border-gray-200 rounded-xl p-5">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          Key Pages
+                        </p>
+
+                        <div className="flex flex-wrap gap-2">
+                          {project.designSystem.keyPages.map(
+                            (page: string, index: number) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1.5 text-xs font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-200"
+                              >
+                                {page}
+                              </span>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* RIGHT COLUMN */}
+                  <div className="space-y-5">
+
+                    {/* Layout Style */}
+                    {project.designSystem.layoutStyle && (
+                      <div className="bg-white border border-gray-200 rounded-xl p-5">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          Layout Style
+                        </p>
+
+                        <div className="space-y-2">
+                          {Object.entries(
+                            project.designSystem.layoutStyle
+                          ).map(([key, value]: any) => (
+                            <div
+                              key={key}
+                              className="grid grid-cols-[160px_1fr] items-center px-3 py-2 rounded-lg border border-gray-100"
+                            >
+                              <span className="text-xs font-semibold text-gray-700 capitalize">
+                                {key}
+                              </span>
+
+                              <span className="text-sm text-gray-900">
+                                {String(value)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Visual Guidelines */}
+                    {project.designSystem.visualGuidelines && (
+                      <div className="bg-white border border-gray-200 rounded-xl p-5">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          Visual Guidelines
+                        </p>
+
+                        <div className="space-y-2">
+                          {Object.entries(
+                            project.designSystem.visualGuidelines
+                          ).map(([key, value]: any) => (
+                            <div
+                              key={key}
+                              className="grid grid-cols-[160px_1fr] items-center px-3 py-2 rounded-lg border border-gray-100"
+                            >
+                              <span className="text-xs font-semibold text-gray-700 capitalize">
+                                {key}
+                              </span>
+
+                              <span className="text-sm text-gray-900">
+                                {String(value)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Uniqueness */}
+                    <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-5">
+                      <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-3">
+                        Unique Selling Point
+                      </p>
+
+                      <p className="text-sm leading-relaxed text-gray-800">
+                        {project.designSystem.uniqueness?.differentiator || "-"}
+                      </p>
+                    </div>
+
+                  </div>
                 </div>
-              )
+              </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* VISUAL GUIDELINES */}
-      {project.designSystem.visualGuidelines && (
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-            Visual Guidelines
-          </p>
-
-          <div className="flex flex-col gap-2">
-            {Object.entries(project.designSystem.visualGuidelines).map(
-              ([key, value]: any) => (
-                <div
-                  key={key}
-                  className="flex justify-between px-3 py-2 border border-gray-200 rounded-lg"
-                >
-                  <span className="text-xs font-semibold text-gray-700">
-                    {key}
-                  </span>
-                  <span className="text-xs text-gray-900">{value}</span>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* UNIQUENESS */}
-      <div>
-        <p className="text-xs font-semibold text-gray-500 uppercase">
-          Uniqueness
-        </p>
-        <p className="text-sm text-gray-900">
-          {project.designSystem.uniqueness?.differentiator || "-"}
-        </p>
-      </div>
-    </div>
-  </div>
-)}
 
           </div>
 

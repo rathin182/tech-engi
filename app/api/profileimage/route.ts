@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 import { getUser } from "@/lib/auth";
-
-
-import fs from "fs/promises";
-import path from "path";
+import { uploadFile } from "@/lib/uploads";
 
 export async function POST(req: NextRequest) {
   try {
-    const { user, error } = await getUser();
+    const { user } = await getUser();
 
     if (!user?.email) {
       return NextResponse.json(
@@ -35,29 +31,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
+    const imageUrl = await uploadFile(
+      file,
       "profile"
     );
 
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-
-    const filePath = path.join(uploadDir, fileName);
-
-    await fs.writeFile(filePath, buffer);
-
-    const imageUrl = `/uploads/profile/${fileName}`;
-
     await prisma.user.update({
       where: {
-        email: user?.email,
+        email: user.email,
       },
       data: {
         image: imageUrl,
@@ -67,7 +48,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       image: imageUrl,
-      message: "Profile image uploaded successfully",
+      message:
+        "Profile image uploaded successfully",
     });
   } catch (error) {
     console.error(error);

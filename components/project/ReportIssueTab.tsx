@@ -174,7 +174,7 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
       const formData = new FormData();
       formData.append("projectId", projectId);
       formData.append("issueType", newTicket.issueType);
-      formData.append("target", newTicket.target);
+      formData.append("target", newTicket.target.toUpperCase());
       formData.append("description", newTicket.description);
 
       newTicket.images.forEach((file) => {

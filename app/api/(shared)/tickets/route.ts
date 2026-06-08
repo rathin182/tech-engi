@@ -75,8 +75,6 @@ export async function GET(req: NextRequest) {
         raisedBy: { select: { name: true, image: true, role: true } }
       }
     });
-    
-
 
 
     return NextResponse.json({ success: true, tickets }, { status: 200 });
@@ -166,7 +164,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Ticket raised successfully" }, { status: 201 });
 
-  } catch {
+  } catch (error : any) {
+    
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

@@ -50,8 +50,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ proj
 
     const { projectId } = await params;
     const body = await req.json();
-console.log("calleedd");
-
     if (body.action === "UPDATE_PROGRESS") {
       // Progress logic
       const { user, error } = await getUser();
@@ -72,8 +70,6 @@ console.log("calleedd");
         technology,
         designSystem,
       } = body;
-
-      console.log(technology, "technology", designSystem, "designSystem");
       
 
       const project = await prisma.project.findUnique({
@@ -201,8 +197,6 @@ console.log("calleedd");
             },
           });
       }
-
-      console.log(projectUpdate,savedDesignSystem, "dataa");
       
 
       return NextResponse.json(
@@ -220,7 +214,6 @@ console.log("calleedd");
       );
 
     } else {
-      console.log("calleeedd 🔥 🔥 🔥");
       
       // Project details update logic
       const validation = engineerUpdateSchema.safeParse(body);

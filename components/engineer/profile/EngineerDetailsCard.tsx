@@ -16,8 +16,7 @@ const EXP_LABELS: Record<string, string> = {
 
 export default function EngineerDetailsCard({ profile, onUpdate }: { profile: any, onUpdate: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
-  console.log(profile, "profile");
-  
+
   return (
     <>
       <div className="p-6 border border-[var(--border)] rounded-2xl bg-white">
@@ -37,14 +36,14 @@ export default function EngineerDetailsCard({ profile, onUpdate }: { profile: an
                 <p className="text-xs text-[var(--text-muted)] font-semibold mb-1 uppercase tracking-wider">Qualification</p>
                 <p className="font-semibold text-sm text-[var(--text-primary)]">{profile.qualification}</p>
               </div>
-              
+
               <div className="flex-1 min-w-[120px]">
                 <p className="text-xs text-[var(--text-muted)] font-semibold mb-1 uppercase tracking-wider">Experience</p>
                 <p className="font-semibold text-sm text-[var(--text-primary)]">
                   {profile.yearsOfExperience ? EXP_LABELS[profile.yearsOfExperience] : "Not specified"}
                 </p>
               </div>
-              
+
               <div className="flex-1 min-w-[120px]">
                 <p className="text-xs text-[var(--text-muted)] font-semibold mb-1 uppercase tracking-wider">Approval Status</p>
                 <span className={`inline-block px-2.5 py-1 rounded text-xs font-bold tracking-wider ${profile.status === 'APPROVED' ? 'bg-green-100 text-green-700' : profile.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
@@ -54,86 +53,86 @@ export default function EngineerDetailsCard({ profile, onUpdate }: { profile: an
             </div>
 
             <div className="md:col-span-2 pt-4 border-t border-dashed border-[var(--border)] mb-3">
-  <p className="text-xs text-[var(--text-muted)] font-semibold mb-4 uppercase tracking-wider">
-    Professional Links & Achievements
-  </p>
+              <p className="text-xs text-[var(--text-muted)] font-semibold mb-4 uppercase tracking-wider">
+                Professional Links & Achievements
+              </p>
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div>
-      <p className="text-xs text-[var(--text-muted)] mb-1">GitHub</p>
-      {profile.github ? (
-        <a
-          href={profile.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline text-sm font-medium break-all"
-        >
-          {profile.github}
-        </a>
-      ) : (
-        <p className="text-sm text-gray-500">Not Provided</p>
-      )}
-    </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div>
+                  <p className="text-xs text-[var(--text-muted)] mb-1">GitHub</p>
+                  {profile.github ? (
+                    <a
+                      href={profile.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm font-medium break-all"
+                    >
+                      {profile.github}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-500">Not Provided</p>
+                  )}
+                </div>
 
-    <div>
-      <p className="text-xs text-[var(--text-muted)] mb-1">LinkedIn</p>
-      {profile.linkedin ? (
-        <a
-          href={profile.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline text-sm font-medium break-all"
-        >
-          {profile.linkedin}
-        </a>
-      ) : (
-        <p className="text-sm text-gray-500">Not Provided</p>
-      )}
-    </div>
+                <div>
+                  <p className="text-xs text-[var(--text-muted)] mb-1">LinkedIn</p>
+                  {profile.linkedin ? (
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm font-medium break-all"
+                    >
+                      {profile.linkedin}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-500">Not Provided</p>
+                  )}
+                </div>
 
-    <div>
-      <p className="text-xs text-[var(--text-muted)] mb-1">Portfolio</p>
-      {profile.portfolio ? (
-        <a
-          href={profile.portfolio}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline text-sm font-medium break-all"
-        >
-          {profile.portfolio}
-        </a>
-      ) : (
-        <p className="text-sm text-gray-500">Not Provided</p>
-      )}
-    </div>
-  </div>
+                <div>
+                  <p className="text-xs text-[var(--text-muted)] mb-1">Portfolio</p>
+                  {profile.portfolio ? (
+                    <a
+                      href={profile.portfolio}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm font-medium break-all"
+                    >
+                      {profile.portfolio}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-500">Not Provided</p>
+                  )}
+                </div>
+              </div>
 
-  <div>
-    <p className="text-xs text-[var(--text-muted)] mb-2">Achievements</p>
+              <div>
+                <p className="text-xs text-[var(--text-muted)] mb-2">Achievements</p>
 
-    {profile.achievements?.length > 0 ? (
-      <div className="flex flex-col gap-2">
-        {profile.achievements.map((achievement: string, index: number) => (
-          <div
-            key={index}
-            className="bg-gray-50 border border-[var(--border)] rounded-lg px-4 py-3 text-sm"
-          >
-            {achievement}
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p className="text-sm text-gray-500">No achievements added yet.</p>
-    )}
-  </div>
-</div>
+                {profile.achievements?.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {profile.achievements.map((achievement: string, index: number) => (
+                      <div
+                        key={index}
+                        className="bg-gray-50 border border-[var(--border)] rounded-lg px-4 py-3 text-sm"
+                      >
+                        {achievement}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No achievements added yet.</p>
+                )}
+              </div>
+            </div>
 
             {/* Document and Skills Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
               <div className="md:col-span-2">
                 <p className="text-xs text-[var(--text-muted)] font-semibold mb-2 uppercase tracking-wider">ID Document ({profile.idType})</p>
                 <p className="font-mono text-sm text-[var(--text-primary)] font-semibold mb-3">ID Number: {profile.idNumber}</p>
-                
+
                 {profile.idFile && (
                   <div className="h-[250px] max-w-sm">
                     <DocumentViewer url={profile.idFile} altText="ID Proof" className="w-full h-full" />

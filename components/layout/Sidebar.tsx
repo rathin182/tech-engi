@@ -9,7 +9,9 @@ import {
   Presentation,
   Lightbulb,
   FileUp,
-  Handshake
+  Handshake,
+  Bug,
+  Paperclip
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -35,8 +37,8 @@ const CLIENT_NAV: NavItem[] = [
   { label: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/client" },
   { label: "Message", icon: <MessageSquare size={20} />, href: "/client/message" },
   // { label: "Projects", icon: <FolderKanban size={20} />, href: "/client/project" },
-  { label: "Report Issue", icon: <MessageSquare size={20} />, href: "/client/reportissue" },
-  { label: "Assets", icon: <MessageSquare size={20} />, href: "/client/assets" },
+  { label: "Report Issue", icon: <Bug size={20} />, href: "/client/reportissue" },
+  { label: "Assets", icon: <Paperclip size={20} />, href: "/client/assets" },
   { label: "Payout", icon: <CreditCard size={20} />, href: "/client/account" },
   { label: "Profile", icon: <User size={20} />, href: "/client/profile" },
 ];
@@ -56,10 +58,10 @@ const NavLink = ({ item, collapsed }: { item: NavItem; collapsed: boolean }) => 
   return (
     <Link
       href={item.href}
-      className={`w-full flex items-center gap-3 px-4 py-3 text-[15px] font-semibold rounded-xl transition-all duration-200 group relative
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
           ${isActive
-          ? "bg-[#FFAE58] text-white shadow-sm"
-          : "text-gray-500 hover:bg-[#fff4e6] hover:text-[#FFAE58]"
+          ? "bg-[#FFAE58] text-white shadow-sm font-semibold text-[17px]"
+          : "text-gray-500 hover:bg-[#fff4e6] hover:text-[#FFAE58] text-[15px]"
         }`}
     >
       <span className={`shrink-0 transition-colors ${isActive ? "text-white" : "text-gray-400 group-hover:text-[#FFAE58]"}`}>

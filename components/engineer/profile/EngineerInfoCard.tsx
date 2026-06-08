@@ -8,7 +8,6 @@ import ChangePasswordModal from "./modals/ChangePasswordModal";
 export default function EngineerInfoCard({ user, onUpdate }: { user: any, onUpdate: () => void }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPassOpen, setIsPassOpen] = useState(false);
-console.log(user, "user");
 
   return (
     <>

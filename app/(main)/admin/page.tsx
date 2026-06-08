@@ -29,6 +29,7 @@ export default function DashboardPage() {
 
   const stats = data?.stats || {};
   const charts = data?.charts || {};
+  console.log(data, "data");
   
   return (
     <DashboardShell>

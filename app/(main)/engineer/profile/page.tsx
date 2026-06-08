@@ -29,7 +29,6 @@ export default function Profile() {
   const profile = data?.profile;
 
   if (!user) return <p className="text-center mt-10">No user found</p>;
-console.log(user, "profile", profile);
 
   return (
     <DashboardShell>

@@ -112,7 +112,6 @@ const DesignOverview = ({ data }: { data: any }) => {
 
   const designSystem = project?.designSystem || {};
   const [currentSlide, setCurrentSlide] = useState(0);
-  console.log(data, "data");
 
   const val = (v: any) =>
     Array.isArray(v)

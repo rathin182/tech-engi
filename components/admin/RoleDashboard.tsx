@@ -60,7 +60,6 @@ export default function RoleDashboard({ role }: { role: "ENGINEER" | "ADMIN" | "
     if (previousPageData && previousPageData.users.length === 0) return null;
     return `/api/admin/users?role=${role}&search=${encodeURIComponent(debouncedSearch)}&status=${statusFilter}&page=${pageIndex + 1}&limit=12`;
   };
-console.log(getKey, "key");
 
   const { data, size, setSize, isValidating, mutate } = useSWRInfinite(
     getKey,
