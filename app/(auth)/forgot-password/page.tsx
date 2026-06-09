@@ -30,6 +30,8 @@ const ForgotPasswordPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    
     setFormData((prev) => ({ ...prev, [name]: value.replace(/\s/g, "") }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -92,13 +94,13 @@ const ForgotPasswordPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.newPassword,
+          newPassword: formData.newPassword,
         }),
       });
       const data = await response.json();
       if (response.ok) {
         toast.success(data.message);
-        router.push("/signin");
+        router.push("/login");
       } else {
         toast.error(data.message || "Failed to reset password");
       }

@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const validation = resetPasswordSchema.safeParse(body);
+    console.log(validation, "validation", body);
     
     if (!validation.success) {
       return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });

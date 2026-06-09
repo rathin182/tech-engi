@@ -161,12 +161,12 @@ export default function LoginPage() {
               <span>Sign up with Google</span>
             </button>
 
-            {/* <p className="mt-8 text-center text-sm text-gray-500">
+            <p className="mt-8 text-center text-sm text-gray-500">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-[#f0b31e] hover:underline font-semibold">
+              <Link href="/register/client" className="text-[#f0b31e] hover:underline font-semibold">
                 Register here
               </Link>
-            </p> */}
+            </p>
           </div>
         </div>
       </div>
