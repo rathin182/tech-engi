@@ -133,14 +133,14 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
   const isClient = role === "CLIENT";
   const [newTicket, setNewTicket] = useState({
     issueType: "",
-    target: role === "ADMIN" ? "Engineer" : isEngineer ? "Platform":"Engineer",
+    target: role === "ADMIN" ? "Engineer" : isEngineer ? "Platform" : "Engineer",
     description: "",
     images: [] as File[],
   });
 
   const [activeTab, setActiveTab] = useState("ME");
 
-  const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : role === "CLIENT"? ["ME", "ENGINEER", "ADMIN"]: ["ME", "ADMIN", "CLIENT"];
+  const roleTabs = role === "ADMIN" ? ["ME", "ENGINEER", "CLIENT"] : role === "CLIENT" ? ["ME", "ENGINEER", "ADMIN"] : ["ME", "ADMIN", "CLIENT"];
 
   const fetchTickets = async () => {
     try {
@@ -274,8 +274,11 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
       </div>
     );
 
-  const targetOptions = role === "ADMIN" ? ["Engineer"] : role === "ENGINEER" ? ["Platform", "Client"] : ["Engineer", "Admin"];
+  const targetOptions = role === "ADMIN" ? ["Engineer", "Client"] : role === "ENGINEER" ? ["Platform", "Client"] : ["Engineer", "Platform"];
 
+  console.log(filteredTickets);
+
+  const statusChange = {}
 
   return (
     <div className="space-y-6">
@@ -441,29 +444,23 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
                                   ? "Updating..."
                                   : report.status.replace("_", " ")}
 
-                                {role !== "ENGINEER" && !updating && (
+                                {( report.raisedById === currentUserId || role === "ADMIN") && !updating && (
                                   <span className="text-[10px]">▼</span>
                                 )}
                               </button>
 
                               {/* ✅ Controlled Dropdown */}
-                              {openDropdownId === report.id &&
-                                role !== "ENGINEER" &&
-                                !updating && (
+                              {(
+                                openDropdownId === report.id &&
+                                !updating &&
+                                ( report.raisedById === currentUserId || role === "ADMIN")) && (
                                   <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-md z-10">
-                                    {[
-                                      "OPEN",
-                                      "IN_PROGRESS",
-                                      "RESOLVED",
-                                      "CLOSED",
-                                    ].map((status) => (
+                                    {["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"].map((status) => (
                                       <button
                                         key={status}
                                         onClick={async () => {
-                                          // ✅ Close dropdown immediately
                                           setOpenDropdownId(null);
 
-                                          // ✅ Update status
                                           await updateTicketStatus({
                                             ticketId: report.id,
                                             status,
@@ -530,8 +527,6 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
             )}
           </div>
         </div>
-
-
       </div>
 
       {showModal && (
@@ -672,7 +667,7 @@ export default function ReportIssueTab({ projectId }: { projectId: string }) {
                           <img
                             src={URL.createObjectURL(file)}
                             alt={file.name}
-                            className=" h-24 w-full object-cover"/>
+                            className=" h-24 w-full object-cover" />
 
                           <div
                             className=" absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1">

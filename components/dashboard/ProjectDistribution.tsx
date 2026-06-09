@@ -151,8 +151,8 @@ const ProjectDistribution: React.FC<Props> = ({ data = [], }) => {
                 />
 
                 <div className="flex flex-1 items-center justify-between">
-                  <span className="truncate text-sm font-medium text-[#374151]">
-                    {item.name}
+                  <span className="line-clamp-2 text-sm font-medium text-[#374151]">
+                    {item.name}Manage engineers and invitations
                   </span>
 
                   <span className="text-sm font-semibold text-[#111827]">

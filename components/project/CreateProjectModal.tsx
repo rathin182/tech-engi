@@ -78,7 +78,7 @@ export function CreateProjectModal({ onClose, onCreated, user }: { onClose: () =
           handleStartMatching(projectId);
           onCreated();
           onClose();
-          router.push(`/client/project/${projectId}`);
+          router.push(`/client`);
         },
         onError: (errMsg) => {
           setError(errMsg);

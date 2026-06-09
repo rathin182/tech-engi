@@ -55,7 +55,7 @@ export default function ClientProjectsCarousel({ projects, onProjectSelect,}: Cl
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2
-                        className="text-2xl font-bold"
+                        className="text-xl font-semibold"
                         style={{ color: "var(--text-primary)" }}
                     >
                         Projects Portfolio

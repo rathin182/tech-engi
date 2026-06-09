@@ -17,6 +17,7 @@ const ForgotPasswordPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpInputDisabled, setOtpInputDisabled] = useState(false); // disables otp field after verified
   const [emailDisabled, setEmailDisabled] = useState(false); // disables email after otp sent
@@ -52,10 +53,10 @@ const ForgotPasswordPage = () => {
     }
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/send-otp", {
+      const response = await fetch("/api/auth/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email }),
+        body: JSON.stringify({ email: formData.email, type: "RESET_PASSWORD" }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -83,7 +84,8 @@ const ForgotPasswordPage = () => {
       setErrors({ newPassword: "New password is required" });
       return;
     }
-    setLoading(true);
+    // setLoading(true);
+    setResetLoading(true);
     try {
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
@@ -103,7 +105,7 @@ const ForgotPasswordPage = () => {
     } catch {
       toast.error("Failed to reset password");
     } finally {
-      setLoading(false);
+      setResetLoading(false);
     }
   };
 
@@ -115,10 +117,10 @@ const ForgotPasswordPage = () => {
     }
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/verify-otp", {
+      const response = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email, otp: formData.otp }),
+        body: JSON.stringify({ email: formData.email, code: formData.otp, type: "RESET_PASSWORD" }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -181,11 +183,10 @@ const ForgotPasswordPage = () => {
                     value={formData.email.toLowerCase()}
                     onChange={handleChange}
                     placeholder="you@example.com"
-                    className={`w-full pl-11 pr-4 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${
-                      errors.email
+                    className={`w-full pl-11 pr-4 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${errors.email
                         ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-200"
                         : "border-gray-200 focus:border-[#f0b31e] focus:ring-1 focus:ring-[#f0b31e]/30"
-                    }`}
+                      }`}
                   />
                   {/* green dot when valid */}
                   {!errors.email && formData.email && (
@@ -199,59 +200,60 @@ const ForgotPasswordPage = () => {
 
               {/* Resend OTP link */}
               {otpSent && (
-                <div className="flex justify-end -mt-3">
-                  <button
-                    type="button"
-                    onClick={handleSendOtp}
-                    className="text-xs text-[#f0b31e] hover:text-yellow-600 font-medium transition-colors"
-                  >
-                    Resend OTP
-                  </button>
+                <div>
+                  <div className="flex justify-end -mt-3">
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      className="text-xs text-[#f0b31e] hover:text-yellow-600 font-medium transition-colors"
+                    >
+                      Resend OTP
+                    </button>
+                  </div>
+
+                  {/* OTP */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 ml-1">
+                      OTP
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex-1">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                          <Lock className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          name="otp"
+                          type="text"
+                          disabled={otpInputDisabled}
+                          value={formData.otp}
+                          onChange={handleChange}
+                          placeholder="••••••"
+                          maxLength={6}
+                          className={`w-full pl-11 pr-4 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${errors.otp
+                              ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-200"
+                              : "border-gray-200 focus:border-[#f0b31e] focus:ring-1 focus:ring-[#f0b31e]/30"
+                            }`}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={otpInputDisabled || loading}
+                        onClick={verifyOtp}
+                        className="h-12 px-5 bg-[#f0b31e] hover:bg-[#e0a61a] text-white font-semibold rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      >
+                        {loading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Verify OTP"
+                        )}
+                      </button>
+                    </div>
+                    {errors.otp && (
+                      <p className="text-xs text-red-500 ml-1">{errors.otp}</p>
+                    )}
+                  </div>
                 </div>
               )}
-
-              {/* OTP */}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700 ml-1">
-                  OTP
-                </label>
-                <div className="flex items-center gap-3">
-                  <div className="relative flex-1">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      name="otp"
-                      type="text"
-                      disabled={otpInputDisabled}
-                      value={formData.otp}
-                      onChange={handleChange}
-                      placeholder="••••••"
-                      maxLength={6}
-                      className={`w-full pl-11 pr-4 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${
-                        errors.otp
-                          ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-200"
-                          : "border-gray-200 focus:border-[#f0b31e] focus:ring-1 focus:ring-[#f0b31e]/30"
-                      }`}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    disabled={otpInputDisabled || loading}
-                    onClick={verifyOtp}
-                    className="h-12 px-5 bg-[#f0b31e] hover:bg-[#e0a61a] text-white font-semibold rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                  >
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      "Verify OTP"
-                    )}
-                  </button>
-                </div>
-                {errors.otp && (
-                  <p className="text-xs text-red-500 ml-1">{errors.otp}</p>
-                )}
-              </div>
 
               {/* New Password */}
               <div className="space-y-1.5">
@@ -265,19 +267,18 @@ const ForgotPasswordPage = () => {
                   <input
                     name="newPassword"
                     type={showPassword ? "text" : "password"}
-                    disabled={otpVerified}
+                    disabled={!otpInputDisabled}
                     value={formData.newPassword}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className={`w-full pl-11 pr-11 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${
-                      errors.newPassword
+                    className={`w-full pl-11 pr-11 h-12 rounded-xl border bg-transparent focus:bg-white outline-none transition-all text-sm text-black disabled:opacity-50 disabled:cursor-not-allowed ${errors.newPassword
                         ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-200"
                         : "border-gray-200 focus:border-[#f0b31e] focus:ring-1 focus:ring-[#f0b31e]/30"
-                    }`}
+                      }`}
                   />
                   <button
                     type="button"
-                    disabled={otpVerified}
+                    disabled={!otpInputDisabled}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#f0b31e] transition-colors disabled:opacity-40"
                   >
@@ -298,10 +299,10 @@ const ForgotPasswordPage = () => {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={loading || otpVerified}
+                disabled={resetLoading|| otpVerified}
                 className="w-full h-12 bg-[#f0b31e] hover:bg-[#e0a61a] text-white rounded-xl text-base font-semibold shadow-md shadow-yellow-500/20 transition-all flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? (
+                {resetLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     {otpSent ? "Resetting..." : "Sending..."}

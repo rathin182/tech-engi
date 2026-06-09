@@ -1,67 +1,45 @@
+"use client";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 const Footer = () => {
+  const[email,setEmail]= useState("");
+
+  const handleSend= async () => {
+    try {
+      const res = await fetch("/api/subscribemail", {
+        method: "POST",
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) { toast.success("Thank you for subscribing"); }
+      else toast.error("Sorry for the inconvenience");
+    } catch { toast.error("Error occurred"); } 
+  };
+
   return (
     <footer className="w-full bg-white font-inter overflow-hidden">
 
       {/* TOP SECTION */}
       <div
-        className="
-      max-w-[1600px]
-      mx-auto
-
-      px-4
-      sm:px-8
-      lg:px-16
-
-      pt-12
-
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      xl:grid-cols-4
-
-      gap-10
-      lg:gap-8
-    "
-      >
+        className="w-full mx-auto px-4 sm:px-8 lg:px-16 pt-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10 lg:gap-8 " >
         {/* COLUMN 1 */}
         <div>
           <h2 className="leading-tight text-black font-id">
             <span
-              className="
-            text-[24px]
-            sm:text-[26px]
-            lg:text-[29px]
-
-            font-extrabold
-          "
-            >
+              className=" text-[24px] sm:text-[26px] lg:text-[29px] font-extrabold">
               Connecting Engineering
             </span>
             <br />
 
             <span
-              className="
-            text-[24px]
-            sm:text-[26px]
-            lg:text-[29px]
-
-            font-extrabold
-          "
-            >
+              className=" text-[24px] sm:text-[26px] lg:text-[29px] font-extrabold">
               Talent With Innovative
             </span>
 
             <br />
 
             <span
-              className="
-            text-[24px]
-            sm:text-[26px]
-            lg:text-[29px]
-
-            font-extrabold
-          "
-            >
+              className=" text-[24px] sm:text-[26px] lg:text-[29px] font-extrabold">
               Projects Worldwide
             </span>
           </h2>
@@ -70,106 +48,31 @@ const Footer = () => {
         {/* COLUMN 2 */}
         <div>
           <p
-            className="
-          text-[18px]
-          sm:text-[20px]
-          lg:text-[22px]
-
-          font-bold
-          tracking-[0.15em]
-          lg:tracking-[0.2em]
-
-          text-black
-          uppercase
-
-          mb-4
-          font-id
-        "
-          >
+            className=" text-[18px] sm:text-[20px] lg:text-[22px] font-bold tracking-[0.15em] lg:tracking-[0.2em] text-black uppercase mb-4 font-id ">
             Company
           </p>
 
           <ul className="space-y-2">
             <li>
-              <a
-                href="#"
-                className="
-                text-[16px]
-                sm:text-[17px]
-                lg:text-[18px]
-
-                text-gray-600
-                hover:text-black
-
-                font-id
-                flex
-                items-center
-                gap-1
-              "
-              >
+              <a href="#" className=" text-[16px] sm:text-[17px] lg:text-[18px] text-gray-600 hover:text-black font-id flex items-center gap-1 " >
                 <span className="text-gray-400">›</span>
                 Explore Projects
               </a>
             </li>
             <li>
-              <a
-                href="/register/engineer"
-                className="
-                text-[16px]
-                sm:text-[17px]
-                lg:text-[18px]
-
-                text-gray-600
-                hover:text-black
-
-                font-id
-                flex
-                items-center
-                gap-1
-              "
-              >
+              <a href="/register/engineer" className=" text-[16px] sm:text-[17px] lg:text-[18px] text-gray-600 hover:text-black font-id flex items-center gap-1 " >
                 <span className="text-gray-400">›</span>
                 Join as Builder
               </a>
             </li>
             <li>
-              <a
-                href="/register/client"
-                className="
-                text-[16px]
-                sm:text-[17px]
-                lg:text-[18px]
-
-                text-gray-600
-                hover:text-black
-
-                font-id
-                flex
-                items-center
-                gap-1
-              "
-              >
+              <a href="/register/client" className=" text-[16px] sm:text-[17px] lg:text-[18px] text-gray-600 hover:text-black font-id flex items-center gap-1 " >
                 <span className="text-gray-400">›</span>
                 Start a Project
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="
-                text-[16px]
-                sm:text-[17px]
-                lg:text-[18px]
-
-                text-gray-600
-                hover:text-black
-
-                font-id
-                flex
-                items-center
-                gap-1
-              "
-              >
+              <a href="#" className=" text-[16px] sm:text-[17px] lg:text-[18px] text-gray-600 hover:text-black font-id flex items-center gap-1 " >
                 <span className="text-gray-400">›</span>
                 Contact sales
               </a>
@@ -180,22 +83,7 @@ const Footer = () => {
         {/* COLUMN 3 */}
         <div>
           <p
-            className="
-          text-[18px]
-          sm:text-[20px]
-          lg:text-[22px]
-
-          font-bold
-          tracking-[0.15em]
-          lg:tracking-[0.2em]
-
-          text-black
-          uppercase
-
-          mb-4
-          font-id
-        "
-          >
+            className=" text-[18px] sm:text-[20px] lg:text-[22px] font-bold tracking-[0.15em] lg:tracking-[0.2em] text-black uppercase mb-4 font-id " >
             Contact Info
           </p>
 
@@ -208,21 +96,7 @@ const Footer = () => {
             ].map((item) => (
               <li
                 key={item}
-                className="
-              text-[16px]
-              sm:text-[17px]
-              lg:text-[18px]
-
-              text-gray-600
-
-              font-id
-              flex
-              items-start
-              gap-1
-
-              break-words
-            "
-              >
+                className=" text-[16px] sm:text-[17px] lg:text-[18px] text-gray-600 font-id flex items-start gap-1 break-words " >
                 <span className="text-gray-400 shrink-0">›</span>
                 {item}
               </li>
@@ -231,99 +105,35 @@ const Footer = () => {
         </div>
 
         {/* COLUMN 4 */}
-        <div>
+        <div className="">
           <p
-            className="
-          text-[18px]
-          sm:text-[20px]
-          lg:text-[22px]
-
-          font-bold
-          tracking-[0.15em]
-          lg:tracking-[0.2em]
-
-          text-black
-          uppercase
-
-          mb-4
-
-          text-left
-          xl:text-right
-
-          font-id
-        "
-          >
+            className=" text-[18px] sm:text-[20px] lg:text-[22px] font-bold tracking-[0.15em] lg:tracking-[0.2em] text-black uppercase mb-4 text-left xl:text-right font-id " >
             Release Letter
           </p>
 
           {/* INPUT + BUTTON */}
           <div
-            className="
-          flex
-          flex-col
-
-          items-start
-          xl:items-end
-
-          gap-3
-          mb-4
-        "
-          >
+            className=" flex flex-col items-start xl:items-end gap-3 mb-4 " >
             <input
+            value={email}
               type="email"
+              onChange={(e)=>setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="
-            w-full
-
-            px-4
-            py-4
-
-            text-[13px]
-
-            outline-none
-            font-id
-
-            placeholder-gray-400
-            bg-[#F0F0F0]
-
-            focus:ring-2
-            focus:ring-blue-500
-            focus:border-blue-500
-          "
-            />
+              className=" w-full px-4 py-4 text-[13px] outline-none font-id placeholder-gray-400 bg-[#F0F0F focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " />
 
             <button
-              className="
-            bg-black
-            text-white
-
-            text-[12px]
-            font-bold
-
-            px-5
-            py-3
-
-            font-id
-            hover:bg-gray-800
-
-            whitespace-nowrap
-          "
-            >
+            onClick={()=>{
+               handleSend();
+              
+            }}
+              className=" bg-black text-white text-[12px] font-bold px-5 py-3 font-id hover:bg-gray-800 whitespace-nowrap " >
               SUBSCRIBE
             </button>
           </div>
 
           {/* SOCIAL ICONS */}
           <div
-            className="
-          flex
-          items-center
-          gap-4
-
-          justify-start
-          xl:justify-end
-        "
-          >
+            className=" flex items-center gap-4 justify-start xl:justify-end " >
             {/* LinkedIn */}
             <a href="#" aria-label="LinkedIn">
               <svg
@@ -441,31 +251,9 @@ const Footer = () => {
       {/* BOTTOM BAR */}
       <div className="bg-gray-100 border-t border-gray-200 font-inter text-[#878787]">
         <div
-          className="
-        max-w-[1600px]
-        mx-auto
-
-        px-4
-        sm:px-6
-
-        py-6
-        sm:py-10
-
-        flex
-        flex-col
-        lg:flex-row
-
-        items-center
-        justify-between
-
-        gap-4
-
-        text-center
-        lg:text-left
-      "
-        >
+          className=" max-w-[1600px] mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col lg:flex-row items-center justify-between gap-4 text-center lg:text-left">
           <p className="text-[14px] sm:text-[15px]">
-            © 2026 Tech ENGI
+            © 2026 TsQuery
           </p>
 
           <p className="text-[14px] sm:text-[15px]">

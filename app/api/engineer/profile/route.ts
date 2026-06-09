@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getEngineer } from "@/lib/auth";
+import { getUser } from "@/lib/auth";
 import { deleteFile, uploadFile, uploadImage } from "@/lib/uploads";
 import { z } from "zod";
 import { generateEmbedding } from "@/lib/embeddings";
 
 export async function GET() {
   try {
-    const { user, error } = await getEngineer(false);
+    const { user, error } = await getUser();
     if (error || !user) {
       return NextResponse.json({ success: false, message: error || "Unauthorized" }, { status: 401 });
     }
@@ -78,47 +79,48 @@ const engineerProfileSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const { user, error } = await getEngineer(false);
+    const { user, error } = await getUser();
+    
     if (error || !user) {
       return NextResponse.json({ success: false, message: error || "Unauthorized" }, { status: 401 });
     }
 
     if (user.engineerProfile) {
-      
+
       return NextResponse.json({ success: false, message: "Profile already exists" }, { status: 400 });
     }
 
     const formData = await req.formData();
 
     const Data = {
-  qualification: formData.get("qualification"),
-  yearsOfExperience: formData.get("yearsOfExperience"),
-  idType: formData.get("idType"),
-  idNumber: formData.get("idNumber"),
+      qualification: formData.get("qualification"),
+      yearsOfExperience: formData.get("yearsOfExperience"),
+      idType: formData.get("idType"),
+      idNumber: formData.get("idNumber"),
 
-  skills: JSON.parse(formData.get("skills") as string),
+      skills: JSON.parse(formData.get("skills") as string),
 
-  certifications: JSON.parse(
-    (formData.get("certifications") as string) || "[]"
-  ),
+      certifications: JSON.parse(
+        (formData.get("certifications") as string) || "[]"
+      ),
 
-  qualificationDetails: formData.get("qualificationDetails"),
-  universityName: formData.get("universityName"),
+      qualificationDetails: formData.get("qualificationDetails"),
+      universityName: formData.get("universityName"),
 
-  github: formData.get("github"),
-  linkedin: formData.get("linkedin"),
-  portfolio: formData.get("portfolio"),
+      github: formData.get("github"),
+      linkedin: formData.get("linkedin"),
+      portfolio: formData.get("portfolio"),
 
-  achievements: formData.get("achievements"),
+      achievements: formData.get("achievements"),
 
-  preferredMethod: formData.get("preferredMethod"),
+      preferredMethod: formData.get("preferredMethod"),
 
-  upiId: formData.get("upiId"),
-  accountNumber: formData.get("accountNumber"),
-  ifscCode: formData.get("ifscCode"),
-  bankName: formData.get("bankName"),
-  accountHolder: formData.get("accountHolder"),
-};
+      upiId: formData.get("upiId"),
+      accountNumber: formData.get("accountNumber"),
+      ifscCode: formData.get("ifscCode"),
+      bankName: formData.get("bankName"),
+      accountHolder: formData.get("accountHolder"),
+    };
 
     const idFile = formData.get("file") as File;
     if (!idFile) {
@@ -136,7 +138,7 @@ export async function POST(req: NextRequest) {
 
     const validation = engineerProfileSchema.safeParse(Data);
     if (!validation.success) {
-      
+
       return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });
     }
 
@@ -233,8 +235,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Profile created successfully" }, { status: 201 });
 
-  } catch (error : any) {
-    
+  } catch (error: any) {
+
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
@@ -243,6 +245,7 @@ export async function PUT(req: NextRequest) {
   try {
     const { user, error } = await getEngineer(false);
     if (error || !user) {
+      
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
@@ -276,6 +279,11 @@ export async function PUT(req: NextRequest) {
     const certsRaw = formData.get("certifications") as string;
     const idFile = formData.get("idFile") as File | null;
     const yearsOfExperience = formData.get("yearsOfExperience") as any || null;
+
+    const github = formData.get("github") as string | null;
+    const linkedin = formData.get("linkedin") as string | null;
+    const portfolio = formData.get("portfolio") as string | null;
+    const achievementsRaw = formData.get("achievements") as string;
 
     if (qualification && idType && idNumber) {
       let skills: string[] = [];
@@ -317,8 +325,12 @@ export async function PUT(req: NextRequest) {
 
       const newProfile = await prisma.engineerProfile.upsert({
         where: { userId: user.id },
-        update: { qualification, idType, idNumber, skills, certifications: finalCertifications, idFile: idFileUrl, yearsOfExperience },
-        create: { userId: user.id, qualification, idType, idNumber, skills, certifications: finalCertifications, idFile: idFileUrl, status: "PENDING", yearsOfExperience }
+        update: {
+          qualification, idType, idNumber, skills, certifications: finalCertifications, idFile: idFileUrl, yearsOfExperience, github, linkedin,
+          portfolio,
+          achievements: JSON.parse(achievementsRaw),
+        },
+        create: { userId: user.id, qualification, idType, idNumber, skills, certifications: finalCertifications, idFile: idFileUrl, status: "PENDING", yearsOfExperience, github, linkedin, portfolio, achievements: JSON.parse(achievementsRaw), }
       });
 
       if (skills.length > 0) {

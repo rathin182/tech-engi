@@ -614,7 +614,7 @@ const ProjectAssets = () => {
                             No resources found
                         </p>
 
-                        <button
+                        {/* <button
                             onClick={() => {
                                 setSearchTerm("");
                                 setSelectedProject("ALL");
@@ -623,7 +623,7 @@ const ProjectAssets = () => {
                             className="mt-3 px-4 py-2 rounded-lg bg-blue-600 text-white"
                         >
                             Clear Filters
-                        </button>
+                        </button> */}
                     </div>
                 )}
             </div>
@@ -722,7 +722,7 @@ const ProjectAssets = () => {
                             </div>
 
                             {/* Lock */}
-                            <div className="flex items-center gap-3">
+                            {/* <div className="flex items-center gap-3">
                                 <input
                                     type="checkbox"
                                     checked={resource.isLocked}
@@ -735,7 +735,7 @@ const ProjectAssets = () => {
                                 />
 
                                 <span>Lock Resource</span>
-                            </div>
+                            </div> */}
 
                             {/* Upload */}
                             {["IMAGE", "FILE"].includes(resource.type) && (

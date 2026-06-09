@@ -262,8 +262,7 @@ export default function ProjectProgress({data = [],}: {data: any[];}) {
                                 {/* TOOLTIP */}
 
                                 {item.value > 0 && (
-                                    <div
-                                        className=" absolute bottom-[30%] left-1/2 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-[#1F2940] rounded-2xl w-[240px] max-w-[240px] p-4 text-white shadow-2xl z-[999] pointer-events-none">
+                                    <div className="absolute bottom-[30%] left-1/2 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl w-[240px] max-w-[240px] p-4 text-[#3d3e3f] shadow-[0_8px_32px_rgba(0,0,0,0.25)] z-[999] pointer-events-none">
 
                                         {/* HEADER */}
 
@@ -273,7 +272,7 @@ export default function ProjectProgress({data = [],}: {data: any[];}) {
                                                 {item.value} Projects
                                             </h4>
 
-                                            <span className=" text-[11px] text-[#BFC8D7]">
+                                            <span className=" text-[11px] text-[#3d3e3f]">
                                                 {item.label}
                                             </span>
 
@@ -294,11 +293,11 @@ export default function ProjectProgress({data = [],}: {data: any[];}) {
                                                         key={index}
                                                         className=" bg-white/5 rounded-xl px-3 py-2 ">
 
-                                                        <p className=" text-[12px] font-medium text-white truncate ">
+                                                        <p className=" text-[12px] font-medium text-[#3d3e3f] truncate ">
                                                             {project.title}
                                                         </p>
 
-                                                        <span className=" text-[10px] text-[#BFC8D7] mt-1 inline-block ">
+                                                        <span className=" text-[10px] text-[#3d3e3f] mt-1 inline-block ">
                                                             {project.status
                                                                 ?.replaceAll("_", " ")}
                                                         </span>
@@ -311,7 +310,7 @@ export default function ProjectProgress({data = [],}: {data: any[];}) {
 
                                         {/* POINTER */}
 
-                                        <div className=" absolute left-1/2 -bottom-2 -translate-x-1/2 w-4 h-4 bg-[#1F2940] rotate-45 " />
+                                        <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-4 h-4 bg-white/10 backdrop-blur-xl border-r border-b border-white/20 rotate-45"/>
 
                                     </div>
                                 )}

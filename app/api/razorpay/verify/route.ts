@@ -3,13 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { getClient } from "@/lib/auth";
 import crypto from "crypto";
 import sendEmail from "@/lib/email";
-import { projectCompletedEngineerTemplate } from "@/lib/templates";
+import { advancePaymentSuccessTemplate, projectCompletedEngineerTemplate } from "@/lib/templates";
 
 export async function POST(req: NextRequest) {
   try {
     const { user, error } = await getClient();
     if (error || !user?.clientProfile) {
-      return NextResponse.json( { success: false, message: error || "Unauthorized" }, { status: 401 } );
+      return NextResponse.json({ success: false, message: error || "Unauthorized" }, { status: 401 });
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
@@ -22,25 +22,26 @@ export async function POST(req: NextRequest) {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      return NextResponse.json( { success: false, message: "Invalid payment signature" }, { status: 400 } );
+      return NextResponse.json({ success: false, message: "Invalid payment signature" }, { status: 400 });
     }
 
     const transaction = await prisma.transaction.findUnique({
       where: { razorpayOrderId: razorpay_order_id },
       include: {
         project: {
-          include: { engineer: { include: { user: true } }, client: { include: { user: true } }
+          include: {
+            engineer: { include: { user: true } }, client: { include: { user: true } }
           },
         },
       },
     });
 
     if (!transaction) {
-      return NextResponse.json( { success: false, message: "Transaction not found" }, { status: 404 } );
+      return NextResponse.json({ success: false, message: "Transaction not found" }, { status: 404 });
     }
 
     if (transaction.status !== "PENDING") {
-      return NextResponse.json( { success: false, message: "Transaction already processed" }, { status: 400 } );
+      return NextResponse.json({ success: false, message: "Transaction already processed" }, { status: 400 });
     }
 
     const project = transaction.project;
@@ -66,6 +67,18 @@ export async function POST(req: NextRequest) {
             status: "SEARCHING",
           },
         });
+        const payoutAmount = project.budget * 0.4;
+
+        const engineerEmailHtml = advancePaymentSuccessTemplate(
+          project.title,
+          payoutAmount
+        );
+
+        await sendEmail(
+          project.engineer!.user.email,
+          "Advance Payment Received",
+          engineerEmailHtml
+        );
 
       } else if (transaction.type === "FINAL_PAYMENT") {
         await tx.project.update({
@@ -85,7 +98,7 @@ export async function POST(req: NextRequest) {
         // Create or update payout for engineer
         if (project.engineerId) {
           const payoutAmount = project.budget * 0.7;
-          
+
           const existingPayout = await tx.transaction.findFirst({
             where: {
               projectId: project.id,
@@ -110,18 +123,18 @@ export async function POST(req: NextRequest) {
     });
 
     // Send email to engineer if final payment
-    if ( transaction.type === "FINAL_PAYMENT" && project.engineer?.user.email ) {
+    if (transaction.type === "FINAL_PAYMENT" && project.engineer?.user.email) {
       const payoutAmount = project.budget * 0.7;
       const engineerEmailHtml = projectCompletedEngineerTemplate(
         project.title,
         payoutAmount
       );
 
-      sendEmail( project.engineer.user.email, `Project Completed: ${project.title}`, engineerEmailHtml );
+      sendEmail(project.engineer.user.email, `Project Completed: ${project.title}`, engineerEmailHtml);
     }
 
-    return NextResponse.json( { success: true, message: "Payment verified successfully" }, { status: 200 } );
+    return NextResponse.json({ success: true, message: "Payment verified successfully" }, { status: 200 });
   } catch {
-    return NextResponse.json( { success: false, message: "Internal server error" }, { status: 500 } );
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

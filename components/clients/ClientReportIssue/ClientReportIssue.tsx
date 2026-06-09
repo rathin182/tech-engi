@@ -393,14 +393,14 @@ const ClientReportIssue = () => {
                                                                         ? "Updating..."
                                                                         : report.status.replace("_", " ")}
 
-                                                                    {role !== "ENGINEER" && !updating && (
+                                                                    {report.raisedById === currentUserId && !updating && (
                                                                         <span className="text-[10px]">▼</span>
                                                                     )}
                                                                 </button>
 
                                                                 {/* ✅ Controlled Dropdown */}
                                                                 {openDropdownId === report.id &&
-                                                                    role !== "ENGINEER" &&
+                                                                    report.raisedById === currentUserId &&
                                                                     !updating && (
                                                                         <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-md z-10">
                                                                             {[

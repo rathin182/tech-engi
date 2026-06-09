@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     const validation = verifyOtpSchema.safeParse(body);
     
     if (!validation.success) {
+      
       return NextResponse.json({ success: false, message: validation.error.issues[0].message }, { status: 400 });
     }
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
     const otpRecord = await prisma.otp.findUnique({ 
       where: { email_type: { email, type } } 
     });
-
+    
     if (!otpRecord || otpRecord.code !== code) {
       return NextResponse.json({ success: false, message: "Invalid OTP" }, { status: 400 });
     }
@@ -32,19 +33,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: "OTP has expired" }, { status: 400 });
     }
 
-    if (type === "VERIFY_EMAIL") {
-      const existingUser = await prisma.user.findUnique({ where: { email } });
+    // if (type === "VERIFY_EMAIL") {
+    //   const existingUser = await prisma.user.findUnique({ where: { email } });
       
-      if (!existingUser) {
-        await prisma.otp.delete({ where: { email_type: { email, type } } });
-        return NextResponse.json({ success: false, message: "Account not found. Please register first" }, { status: 404 });
-      }
+    //   if (!existingUser) {
+    //     await prisma.otp.delete({ where: { email_type: { email, type } } });
+    //     return NextResponse.json({ success: false, message: "Account not found. Please register first" }, { status: 404 });
+    //   }
 
-      await prisma.user.update({
-        where: { email },
-        data: { emailVerified: new Date() }
-      });
-    }
+    //   await prisma.user.update({
+    //     where: { email },
+    //     data: { emailVerified: new Date() }
+    //   });
+    // }
 
     await prisma.otp.delete({ where: { email_type: { email, type } } });
 

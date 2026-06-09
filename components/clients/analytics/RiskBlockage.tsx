@@ -47,44 +47,12 @@
 
 'use client';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AlertTriangle } from 'lucide-react';
-
-const tickets = [
-  {
-    id: 1,
-    issueType: 'Database Issue',
-    status: 'OPEN',
-    description:
-      'Database replication delay causing inconsistent analytics data across dashboard views.',
-    createdAt: '18 Jan. 2026',
-  },
-  {
-    id: 2,
-    issueType: 'Frontend Bug',
-    status: 'IN_PROGRESS',
-    description:
-      'UI alignment issue detected in responsive mobile navigation components.',
-    createdAt: '18 Jan. 2026',
-  },
-  {
-    id: 3,
-    issueType: 'Deployment',
-    status: 'RESOLVED',
-    description:
-      'Production deployment timeout issue resolved successfully.',
-    createdAt: '18 Jan. 2026',
-  },
-];
-
-const STATUS_COLOR: Record<string, string> = {
-  OPEN: 'bg-red-50 text-red-700 border-red-200',
-  IN_PROGRESS: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-  RESOLVED: 'bg-green-50 text-green-700 border-green-200',
-  CLOSED: 'bg-gray-100 text-gray-600 border-gray-200',
-};
 
 
 const RiskBlockage = ({ tickets = [] }: { tickets: any[] }) => {
+  const user = useAuth(); // example
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border-2 border-red-400 shadow-sm relative">
 
@@ -97,24 +65,26 @@ const RiskBlockage = ({ tickets = [] }: { tickets: any[] }) => {
 
       {/* Tickets */}
       <div className="space-y-2 mt-0 overflow-y-auto h-60 pr-1 no-scrollbar">
-        {tickets.map((ticket) => (
-          <div
-            key={ticket.id}
-            className="bg-white rounded-[18px] p-5 border border-[#ececec] shadow-[0_4px_18px_rgba(0,0,0,0.05)]"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#fff4d6] flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5 text-[#f5a300]" />
-                </div>
-
-                <span className="text-[20px] font-semibold text-black font-id">
-                  {ticket.issueType}
-                </span>
-              </div>
-            </div>
+        {tickets
+  .filter((ticket) => ticket.createdBy !== user.user?.id)
+  .map((ticket) => (
+    <div
+      key={ticket.id}
+      className="bg-white rounded-[18px] p-5 border border-[#ececec] shadow-[0_4px_18px_rgba(0,0,0,0.05)]"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-[#fff4d6] flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-[#f5a300]" />
           </div>
-        ))}
+
+          <span className="text-[20px] font-semibold text-black font-id">
+            {ticket.issueType}
+          </span>
+        </div>
+      </div>
+    </div>
+  ))}
       </div>
 
       {/* Bottom Fade */}

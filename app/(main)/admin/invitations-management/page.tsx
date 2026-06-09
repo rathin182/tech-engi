@@ -183,7 +183,7 @@ export default function InvitationsManagementPage() {
 
               <CardContent className="space-y-4">
                 {/* Engineers Preview */}
-                <div className="flex -space-x-2">
+                {/* <div className="flex -space-x-2">
                   {project.engineers.slice(0, 3).map((eng: any, i: number) => (
                     <Avatar key={i} >
                       {eng.user.image ? (
@@ -201,7 +201,7 @@ export default function InvitationsManagementPage() {
                       +{project.engineers.length - 3}
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 {/* Budget */}
                 <div className="flex justify-between text-sm">

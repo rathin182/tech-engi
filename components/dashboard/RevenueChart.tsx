@@ -215,32 +215,12 @@ export default function RevenueChart({
         <div className="min-w-0">
 
           <h3
-            className="
-              text-[1rem]
-              sm:text-[1.1rem]
-              xl:text-[1.3rem]
-              font-semibold
-              text-black
-            "
-          >
+            className=" text-[1rem] sm:text-[1.1rem] xl:text-[1.3rem] font-semibold text-black">
             Revenue Overview
           </h3>
 
           <h1
-            className="
-              text-[26px]
-              sm:text-[32px]
-              xl:text-[42px]
-              font-medium
-              leading-none
-              mt-3
-              text-black
-              tracking-[-1px]
-              xl:tracking-[-1.5px]
-              mb-5
-              break-all
-            "
-          >
+            className=" text-[18px] sm:text-[32px] xl:text-[35px] font-medium leading-none mt-3 text-black tracking-[-1px] xl:tracking-[-1.5px] mb-5 break-all">
             ₹
             {totalRevenue?.toLocaleString() ||
               "0"}

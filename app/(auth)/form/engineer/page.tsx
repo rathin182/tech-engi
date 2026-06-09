@@ -166,7 +166,6 @@ export default function EngineerFormPage() {
         return { name: cert.name, fileIndex: index };
       });
       formData.append("certifications", JSON.stringify(mappedCertifications));
-
       const res = await fetch("/api/engineer/profile", {
         method: "POST",
         body: formData,
@@ -674,6 +673,7 @@ export default function EngineerFormPage() {
                       ) {
                         e.preventDefault();
                         setShowErrors(true);
+                        
                         return;
                       }
 

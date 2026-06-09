@@ -22,6 +22,7 @@ interface Project {
   createdAt: string;
   status: string;
   endDate: string;
+  advancePaid: boolean;
 }
 
 interface User {
@@ -118,13 +119,14 @@ const ClientAnalyticsDashboard = () => {
       </div>
     </div>
   );
+  console.log(filteredProjects, "filteredProjects");
 
   // Projects List
   if (!projectId || showProjects) return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">My Projects</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">My Projects</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Select a project to view analytics</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -189,9 +191,36 @@ const ClientAnalyticsDashboard = () => {
             return (
               <div
                 key={project.id}
-                onClick={() => { setProjectId(project.id); setShowProjects(false); window.history.pushState({}, '', `?projectId=${project.id}`); }}
+                onClick={() => {
+                  if (!project.advancePaid) return;
+                  setProjectId(project.id);
+                  setShowProjects(false);
+                  window.history.pushState({}, '', `?projectId=${project.id}`);
+                }}
                 className="group cursor-pointer relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 group-hover:border-blue-300 dark:group-hover:border-blue-600"
               >
+
+                {/* Frosted overlay ONLY if advancePaid is false */}
+                {!project.advancePaid && (
+                  <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 backdrop-blur-md bg-red-500/10 dark:bg-red-500/20 border border-red-400/30 dark:border-red-500/30 z-10 flex flex-col items-center justify-center gap-3">
+
+                    <span className="text-sm font-semibold text-red-600 dark:text-red-300">
+                      Payment Required
+                    </span>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = "/client/account";
+                      }}
+                      className="px-4 cursor-pointer py-2 text-sm font-semibold rounded-md bg-red-600 hover:bg-red-700 text-white transition-colors"
+                    >
+                      Go to Payment
+                    </button>
+
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 flex-1">
                     {project.title}
@@ -200,18 +229,28 @@ const ClientAnalyticsDashboard = () => {
                     {displayStatus}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{project.description || 'No summary available'}</p>
+
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
+                  {project.description || 'No summary available'}
+                </p>
+
                 <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mb-3">
                   <Calendar size={16} />
                   <span>{new Date(project.createdAt).toLocaleDateString()}</span>
                 </div>
+
                 <div className="mb-3">
                   <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                     <span>Progress</span>
                     <span className="font-semibold">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, project.progress))}%` }} />
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{
+                        width: `${Math.min(100, Math.max(0, project.progress))}%`
+                      }}
+                    />
                   </div>
                 </div>
               </div>

@@ -96,7 +96,7 @@ export default function TicketCard({ ticket, onStatusUpdated, }: TicketCardProps
                             {ticket.issueType.replaceAll("_", " ")}
                         </h3>
                         <div
-                            className={`rounded-full px-4 py-2 text-[12px] font-semibold
+                            className={`rounded-full px-3 py-1 text-[12px] font-semibold
       ${statusStyles[
                                 ticket.status as keyof typeof statusStyles
                                 ] || "bg-[#F4F4F5] text-[#52525B]"

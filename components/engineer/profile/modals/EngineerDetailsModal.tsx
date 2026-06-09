@@ -8,7 +8,7 @@ import DocumentViewer from "@/components/ui/DocumentViewer";
 
 interface CertData {
   name: string;
-  fileUrl?: string; 
+  fileUrl?: string;
   file?: File;
 }
 
@@ -26,33 +26,44 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
   const [yearsOfExperience, setYearsOfExperience] = useState("");
   const [idType, setIdType] = useState("AADHAAR");
   const [idNumber, setIdNumber] = useState("");
-  
+
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
-  
+
   const [certs, setCerts] = useState<CertData[]>([]);
   const [certInput, setCertInput] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
-  
+
   const [file, setFile] = useState<File | null>(null);
   const [idPreview, setIdPreview] = useState("");
+  const [achievement, setAchievement] = useState("");
+  const [achievements, setAchievements] = useState<string[]>([]);
+  const [github, setGithub] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [portfolio, setPortfolio] = useState("");
 
   useEffect(() => {
     if (isOpen) {
+
       setQualification(profile?.qualification || "UG");
       setIdType(profile?.idType || "AADHAAR");
       setIdNumber(profile?.idNumber || "");
       setSkills(profile?.skills || []);
       setYearsOfExperience(profile?.yearsOfExperience || "");
-      
+
       setCerts(profile?.certifications || []);
-      
+
       setFile(null);
       setIdPreview(profile?.idFile || "");
-      
+
       setSkillInput("");
       setCertInput("");
       setCertFile(null);
+
+      setAchievements(profile?.achievements || "");
+      setGithub(profile?.github || "");
+      setLinkedin(profile?.linkedin || "");
+      setPortfolio(profile?.portfolio || "");
     }
   }, [profile, isOpen]);
 
@@ -84,7 +95,7 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
       toast.error("Please upload the certificate proof.");
       return;
     }
-    
+
     setCerts([...certs, { name: certInput.trim(), file: certFile }]);
     setCertInput("");
     setCertFile(null);
@@ -100,7 +111,7 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (skills.length === 0) {
       toast.error("Please add at least one skill.");
       return;
@@ -113,7 +124,13 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
     formData.append("idType", idType);
     formData.append("idNumber", idNumber);
     formData.append("skills", JSON.stringify(skills));
-    
+
+
+    formData.append("github", github);
+    formData.append("linkedin", linkedin);
+    formData.append("portfolio", portfolio);
+    formData.append("achievements", JSON.stringify(achievements));
+
     // Map Certifications for the PUT API
     const mappedCerts = certs.map((cert, index) => {
       if (cert.file) {
@@ -122,24 +139,24 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
       }
       return { name: cert.name, fileUrl: cert.fileUrl };
     });
-    
+
     formData.append("certifications", JSON.stringify(mappedCerts));
     if (file) formData.append("idFile", file);
 
     try {
       const res = await fetch("/api/engineer/profile", { method: "PUT", body: formData });
       const data = await res.json();
-      if (data.success) { 
-        toast.success("Details saved"); 
-        onUpdate(); 
-        onClose(); 
+      if (data.success) {
+        toast.success("Details saved");
+        onUpdate();
+        onClose();
       } else {
         toast.error(data.message);
       }
-    } catch { 
-      toast.error("Failed to save details"); 
-    } finally { 
-      setIsSaving(false); 
+    } catch {
+      toast.error("Failed to save details");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -150,65 +167,153 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
         <p className="text-sm text-[var(--text-muted)] font-inter mb-6">Complete your profile to get approved for projects.</p>
 
         <form onSubmit={handleSave} className="grid grid-cols-2 gap-6">
-          
-          {/* Basics */}
-          <div className="col-span-2 md:col-span-1 space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Qualification *</label>
-              <select value={qualification} onChange={e => setQualification(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50">
-                <option value="UG">Undergraduate (UG)</option>
-                <option value="EMPLOYED">Employed</option>
-                <option value="UNEMPLOYED">Unemployed</option>
-              </select>
-            </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Years of Experience *</label>
-              <select 
-                value={yearsOfExperience} 
-                onChange={e => setYearsOfExperience(e.target.value)} 
-                className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50"
-              >
-                <option value="" disabled>Select experience</option>
-                {EXP_LEVELS.map(exp => (
-                  <option key={exp.value} value={exp.value}>{exp.label}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Type *</label>
-              <select value={idType} onChange={e => setIdType(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50">
-                <option value="AADHAAR">Aadhaar Card</option>
-                <option value="PAN">PAN Card</option>
-                <option value="STUDENT_ID">Student ID</option>
-                <option value="PAY_SLIP">Pay Slip</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Number *</label>
-              <input required value={idNumber} onChange={e => setIdNumber(e.target.value.toUpperCase())} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50 uppercase" />
-            </div>
-          </div>
+          <div className="w-[200%]">
+            <div className="flex justify-between ga-4">
+              {/* Basics */}
+              <div className="col-span-2 md:col-span-1 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Qualification *</label>
+                  <select value={qualification} onChange={e => setQualification(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50">
+                    <option value="UG">Undergraduate (UG)</option>
+                    <option value="EMPLOYED">Employed</option>
+                    <option value="UNEMPLOYED">Unemployed</option>
+                  </select>
+                </div>
 
-          {/* ID File Preview */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Document *</label>
-            <label className="flex items-center gap-2 border border-dashed border-[var(--border)] rounded-lg p-3 bg-gray-50/50 hover:border-[var(--primary)] cursor-pointer text-sm w-full truncate transition-colors mb-2">
-              <Upload size={16} className="shrink-0 text-[var(--primary)]"/>
-              <span className="truncate">{file ? file.name : "Upload New File"}</span>
-              <input type="file" accept="image/*,.pdf" onChange={handleIdFileChange} className="hidden" />
-            </label>
-            
-            {/* Real-time Document Preview Box */}
-            {idPreview && (
-              <div className="h-[200px] w-full rounded-xl overflow-hidden shadow-sm border border-[var(--border)] bg-gray-100">
-                <DocumentViewer url={idPreview} altText="ID Document Preview" className="w-full h-full border-none" fileType={file ? file.type : undefined} />
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Years of Experience *</label>
+                  <select
+                    value={yearsOfExperience}
+                    onChange={e => setYearsOfExperience(e.target.value)}
+                    className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50"
+                  >
+                    <option value="" disabled>Select experience</option>
+                    {EXP_LEVELS.map(exp => (
+                      <option key={exp.value} value={exp.value}>{exp.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Type *</label>
+                  <select value={idType} onChange={e => setIdType(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50">
+                    <option value="AADHAAR">Aadhaar Card</option>
+                    <option value="PAN">PAN Card</option>
+                    <option value="STUDENT_ID">Student ID</option>
+                    <option value="PAY_SLIP">Pay Slip</option>
+                  </select>
+                </div>
               </div>
-            )}
+
+              {/* ID File Preview */}
+              <div className="col-span-2 md:col-span-1">
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Document *</label>
+                <label className="flex items-center gap-2 border border-dashed border-[var(--border)] rounded-lg p-3 bg-gray-50/50 hover:border-[var(--primary)] cursor-pointer text-sm w-full truncate transition-colors mb-2">
+                  <Upload size={16} className="shrink-0 text-[var(--primary)]" />
+                  <span className="truncate">{file ? file.name : "Upload New File"}</span>
+                  <input type="file" accept="image/*,.pdf" onChange={handleIdFileChange} className="hidden" />
+                </label>
+
+                {/* Real-time Document Preview Box */}
+                {idPreview && (
+                  <div className="h-[200px] w-full rounded-xl overflow-hidden shadow-sm border border-[var(--border)] bg-gray-100">
+                    <DocumentViewer url={idPreview} altText="ID Document Preview" className="w-full h-full border-none" fileType={file ? file.type : undefined} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Detailss */}
+            <div className="grid grid-cols-2 gap-6 w-full mt-3" >
+              {/* ID Number */}
+              <div>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">ID Number *</label>
+                <input required value={idNumber} onChange={e => setIdNumber(e.target.value.toUpperCase())} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50 uppercase" />
+              </div>
+              {/* Github */}
+              <div>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Github</label>
+                <input required value={github} onChange={e => setGithub(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+              </div>
+              {/* Linkedin */}
+              <div>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Linkedin</label>
+                <input required value={linkedin} onChange={e => setLinkedin(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+              </div>
+              {/* Portfolio */}
+              <div>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Portfolio</label>
+                <input required value={portfolio} onChange={e => setPortfolio(e.target.value)} className="w-full border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50" />
+              </div>
+              {/* Achievement */}
+              <div>
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">
+                    Achievement
+                  </label>
+
+                  <div className="flex gap-2">
+                    <input
+                      value={achievement}
+                      onChange={(e) => setAchievement(e.target.value)}
+                      className="flex-1 border border-[var(--border)] rounded-lg p-3 outline-none focus:border-[var(--primary)] bg-gray-50/50"
+                      placeholder="Enter achievement"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!achievement.trim()) return;
+
+                        setAchievements([...achievements, achievement.trim()]);
+                        setAchievement("");
+                      }}
+                      className="px-4 py-3 rounded-lg bg-[var(--primary)] text-white"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {achievements.map((item, index) => (
+                    <div
+                      key={index}
+                      className=" group flex items-center justify-between rounded-xl border border-[var(--border)] bg-white px-4 py-3 shadow-sm hover:shadow-md hover:border-[var(--primary)]/30 transition-all duration-200">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-2 w-2 rounded-full bg-[var(--primary)] flex-shrink-0" />
+
+                        <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                          {item}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setAchievements(
+                            achievements.filter((_, i) => i !== index)
+                          )
+                        }
+                        className="
+          flex items-center justify-center
+          h-8 w-8
+          rounded-lg
+          text-slate-400
+          hover:bg-red-50
+          hover:text-red-500
+          transition-all duration-200
+        "
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          
+
           {/* Skills */}
           <div className="col-span-2 border-t border-[var(--border)] pt-4">
             <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Skills *</label>
@@ -220,21 +325,21 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
                     <X size={14} />
                   </button>
                 </span>
-              ))} 
-              <input 
-                value={skillInput} 
-                onChange={e => setSkillInput(e.target.value)} 
+              ))}
+              <input
+                value={skillInput}
+                onChange={e => setSkillInput(e.target.value)}
                 onKeyDown={handleSkillKeyDown}
                 placeholder={skills.length === 0 ? "Type a skill and press Enter" : ""}
-                className="flex-1 bg-transparent outline-none min-w-[150px] p-1 text-sm text-[var(--text-primary)]" 
+                className="flex-1 bg-transparent outline-none min-w-[150px] p-1 text-sm text-[var(--text-primary)]"
               />
             </div>
           </div>
-          
+
           {/* Certifications UI */}
           <div className="col-span-2 pt-4">
             <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Certifications & Proofs</label>
-            
+
             {/* Add New Certificate Input Row */}
             <div className="flex gap-2 mb-4">
               <input
@@ -265,7 +370,7 @@ export default function EngineerDetailsModal({ isOpen, onClose, profile, onUpdat
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {certs.map((cert, index) => {
                   const previewUrl = cert.file ? URL.createObjectURL(cert.file) : cert.fileUrl;
-                  
+
                   return (
                     <div key={index} className="flex flex-col bg-white border border-[var(--border)] rounded-xl overflow-hidden shadow-sm relative group">
                       <div className="p-2 border-b border-[var(--border)] bg-gray-50 flex items-center justify-between">

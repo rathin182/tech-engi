@@ -111,7 +111,7 @@ export default function EngineerDetailsCard({ profile, onUpdate }: { profile: an
                 <p className="text-xs text-[var(--text-muted)] mb-2">Achievements</p>
 
                 {profile.achievements?.length > 0 ? (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
                     {profile.achievements.map((achievement: string, index: number) => (
                       <div
                         key={index}

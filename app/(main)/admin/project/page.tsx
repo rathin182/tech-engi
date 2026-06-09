@@ -43,10 +43,23 @@ function StatusBadge({ status }: { status: string }) {
 function ProjectCard({ project }: { project: Project }) {
   const amount = project.budget;
   const amountLabel = "Budget";
-
   return (
-    <Link href={`/admin/project/${project.id}`}>
-      <div className="bg-white border border-[var(--border)] rounded-xl p-5 hover:shadow-md hover:border-[var(--primary)] transition-all cursor-pointer group">
+    <Link href={project.advancePaid ? `/admin/project/${project.id}` : "#"}
+      onClick={(e) => {
+        if (!project.advancePaid) {
+          e.preventDefault();
+        }
+      }}>
+      <div className="relative bg-white border border-[var(--border)] rounded-xl p-5 hover:shadow-md hover:border-[var(--primary)] transition-all cursor-pointer group overflow-hidden">
+
+        {!project.advancePaid && (
+          <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 backdrop-blur-lg bg-white/40 border border-white/50 flex flex-col items-center justify-center gap-3 rounded-xl">
+            <span className="text-sm font-medium text-gray-800 text-center px-4">
+              Advance payment is pending for this project
+            </span>
+          </div>
+        )}
+
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="text-sm font-bold text-[var(--text-primary)] line-clamp-2 group-hover:text-[var(--primary)] transition-colors">
             {project.title}
@@ -139,6 +152,8 @@ export default function ProjectsPage() {
       const data = await res.json();
 
       if (data.success) {
+        console.log(data.projects, "projects");
+
         setProjects(data.projects);
         setTotalPages(data.pagination.totalPages);
         setTotalItems(data.pagination.total);
@@ -159,7 +174,7 @@ export default function ProjectsPage() {
     <DashboardShell>
       <div className="space-y-6 pb-10">
         {/* Header */}
-        
+
 
         {/* Global Stats */}
         {/* <div className="grid grid-cols-3 gap-4">
@@ -181,15 +196,15 @@ export default function ProjectsPage() {
         {/* Filters */}
         <div className="flex md:flex-row items-center justify-between gap-3 p-3 ">
           <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-              All Projects
-            </h1>
-            <p className="text-xs text-[var(--text-muted)] mt-0.5">
-              Overview of all client projects
-            </p>
+            <div>
+              <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
+                All Projects
+              </h1>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Overview of all client projects
+              </p>
+            </div>
           </div>
-        </div>
 
           <div className="flex gap-3 items-center">
 

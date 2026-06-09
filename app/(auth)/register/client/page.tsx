@@ -51,18 +51,6 @@ export default function ClientRegisterPage() {
     }
 
     try {
-      const registerRes = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role: "CLIENT" }),
-      });
-
-      const registerData = await registerRes.json();
-
-      if (!registerRes.ok || !registerData.success) {
-        throw new Error(registerData.message || "Registration failed");
-      }
-
       // Send the OTP
       const otpRes = await fetch("/api/auth/otp/send", {
         method: "POST",
@@ -109,6 +97,18 @@ export default function ClientRegisterPage() {
 
       if (!verifyRes.ok || !verifyData.success) {
         throw new Error(verifyData.message || "Invalid OTP code");
+      }
+
+      const registerRes = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role: "CLIENT" }),
+      });
+
+      const registerData = await registerRes.json();
+
+      if (!registerRes.ok || !registerData.success) {
+        throw new Error(registerData.message || "Registration failed");
       }
 
       const signInRes = await signIn("credentials", {
@@ -172,11 +172,18 @@ export default function ClientRegisterPage() {
             {step === 1 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-120">
                 <div className="text-center mb-8">
+                  <button
+                    onClick={() => router.push('/')}
+                    className="flex items-center cursor-pointer gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors mb-8"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back
+                  </button>
                   <div className="flex h-14 w-14 items-center justify-center rounded-[1rem] bg-[#f0b31e] shadow-lg shadow-yellow-500/30 mx-auto mb-4">
                     <Briefcase className="h-7 w-7 text-white" />
                   </div>
                   <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">
-                    Client Registration
+                    Onboarding
                   </h1>
                   <p className="text-gray-500 mt-2 text-sm">
                     Join to post projects and hire engineers

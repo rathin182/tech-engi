@@ -164,6 +164,7 @@ export async function GET(req: NextRequest) {
     if (status && ["PENDING_ADMIN", "SENT", "ACCEPTED", "REJECTED", "ADMIN_REJECTED", "EXPIRED", "DROPPED"].includes(status)) {
       whereClause.status = status;
     }
+console.log(whereClause, "whereClause");
 
     const invitations = await prisma.projectInvitation.findMany({
       where: whereClause,
@@ -177,6 +178,7 @@ export async function GET(req: NextRequest) {
       },
       orderBy: { createdAt: "desc" }
     });
+console.log(invitations, "invitations");
 
     const formattedInvitations = invitations.map(inv => ({
       ...inv,
@@ -250,6 +252,21 @@ export async function POST(req: NextRequest) {
       },
     }
     );
+
+    if (status === "ACCEPTED") {
+      if (!invitation?.engineer?.id && invitation?.project?.id) {
+        return NextResponse.json({ success: false, message: "Failed to update invitation", }, { status: 500, });
+      }
+
+      const updateProject = await prisma.project.update({
+        where: {
+          id: invitation.project.id
+        },
+        data: {
+          engineerId: invitation.engineer.id
+        }
+      })
+    }
 
     const emailHtml = (
       invitation.status === "ACCEPTED"
@@ -369,6 +386,22 @@ export async function PATCH(req: NextRequest) {
           },
         }
       );
+
+    if (status === "ACCEPTED") {
+      if (!updatedInvitation?.engineer?.id && updatedInvitation?.project?.id) {
+        return NextResponse.json({ success: false, message: "Failed to update invitation", }, { status: 500, });
+      }
+
+      const updateProject = await prisma.project.update({
+        where: {
+          id: updatedInvitation.project.id
+        },
+        data: {
+          engineerId: updatedInvitation.engineer.id
+        }
+      })
+    }
+
     let emailTemplate = "";
     let subject = "";
 
@@ -418,7 +451,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json(
       { success: false, message: "Failed to update invitation", }, { status: 500, }
     );
-  } 
+  }
 }
 
 /*
@@ -438,24 +471,47 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, message: "Invitation id required", }, { status: 400, });
     }
 
-    const invitation =
-      await prisma.projectInvitation.findUnique({
-        where: {
-          id,
-        },
-      });
-
-    if (!invitation) {
-
-      return NextResponse.json(
-        { success: false, message: "Invitation not found", }, { status: 404, });
-    }
-
-    await prisma.projectInvitation.delete({
+    const invitation = await prisma.projectInvitation.findUnique({
       where: {
         id,
       },
+      include: {
+        engineer: {
+          include: {
+            user: true,
+          },
+        },
+
+        project: true,
+      },
     });
+    console.log(invitation, "invvv", id);
+
+    if (!invitation?.project?.id) {
+      return NextResponse.json(
+        { success: false, message: "Invitation not found" },
+        { status: 404 }
+      );
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. remove engineer from project
+      await tx.project.updateMany({
+        where: {
+          id: invitation.projectId,
+          engineerId: invitation.engineerId,
+        },
+        data: {
+          engineerId: null,
+        },
+      });
+
+      // 2. delete invitation
+      await tx.projectInvitation.delete({
+        where: { id },
+      });
+    });
+
 
     return NextResponse.json(
       { success: true, message: "Invitation deleted successfully", }, { status: 200, }

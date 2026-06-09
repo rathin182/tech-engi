@@ -220,6 +220,54 @@ export const payoutSentTemplate = (projectTitle: string, amount: number) => `
   </div>
 `;
 
+export const advancePaymentSuccessTemplate = (
+  projectTitle: string,
+  amount: number
+) => `
+  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eaeaea; border-radius: 8px;">
+    
+    <h3 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+      Payment Successful 🎉
+    </h3>
+
+    <p>
+      Great news! Your advance payment for the project 
+      <b>${projectTitle}</b> has been successfully received.
+    </p>
+
+    <p>
+      An amount of 
+      <b style="font-size: 18px; color: #28a745;">
+        ₹${amount.toLocaleString("en-IN")}
+      </b> 
+      has been credited and the project is now officially activated.
+    </p>
+
+    <p style="color: #555; font-size: 14px;">
+      Your project is now being moved into the next stage of execution. Our team will begin working on it shortly.
+    </p>
+
+    <div style="margin: 20px 0; padding: 12px; background: #f6fff7; border: 1px solid #b7e4c7; border-radius: 6px;">
+      <p style="margin: 0; font-size: 14px; color: #2d6a4f;">
+        ✔ Advance payment confirmed<br/>
+        ✔ Project unlocked<br/>
+        ✔ Status updated to <b>SEARCHING</b>
+      </p>
+    </div>
+
+    <p style="color: #666; font-size: 13px;">
+      You will receive further updates as we progress. If you have any questions, feel free to reach out to our support team.
+    </p>
+
+    <br/>
+
+    <p>
+      Thank you for your trust,<br/>
+      <b>The Platform Team</b>
+    </p>
+  </div>
+`;
+
 export const payoutDetailsRequiredTemplate = (projectTitle: string, amount: number) => `
   <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eaeaea; border-radius: 8px;">
     <h3 style="color: #d9534f; border-bottom: 2px solid #f0b31e; padding-bottom: 10px;">Action Required: Missing Payout Details</h3>

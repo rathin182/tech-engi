@@ -153,7 +153,7 @@ export default function EngineerProjectsPage() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold  text-[var(--text-primary)]">
+              <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
                 My Assigned Projects
               </h1>
               <p className="text-xs  text-[var(--text-muted)] mt-0.5">

@@ -1,12 +1,8 @@
 "use client";
 
-import {
-    AlertTriangle,
-    Bug,
-    ShieldAlert,
-    Clock3,
-    ArrowUpRight,
-} from "lucide-react";
+import { AlertTriangle, Bug, ShieldAlert, Clock3, ArrowUpRight, } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Ticket {
     id: string;
@@ -82,13 +78,14 @@ function formatTimeAgo(date: string) {
     return `${Math.floor(diff / 1440)}d ago`;
 }
 
-export default function TicketIssuesCard({
-    projects,
-}: TicketIssuesCardProps) {
+export default function TicketIssuesCard({ projects, }: TicketIssuesCardProps) {
+    const router = useRouter();
+
     const allTickets = projects.flatMap((project) =>
         project.tickets.map((ticket) => ({
             ...ticket,
             projectTitle: project.title,
+            projectId: project.id,
         }))
     );
 
@@ -102,7 +99,7 @@ export default function TicketIssuesCard({
                     </h2>
 
                     <p className="text-[13px] text-[#8B8B8B] mt-1">
-                    active tickets {allTickets.length}
+                        active tickets {allTickets.length}
                     </p>
                 </div>
 
@@ -132,171 +129,64 @@ export default function TicketIssuesCard({
                         ISSUE_STYLES.DEFAULT;
 
                     return (
+
                         <div
+                            onClick={() => router.push(`/admin/project/${ticket.projectId}`)}
                             key={ticket.id}
+                            className="relative overflow-hidden rounded-[24px] border border-white/10 p-4 transition-all duration-300 ease-in-out cursor-pointer"
                             style={{
-                                position: "relative",
-                                overflow: "hidden",
-
-                                borderRadius: "24px",
-
-                                border: "1px solid rgba(255,255,255,0.10)",
-
-                                padding: "16px",
-
-                                transition: "all 0.3s ease",
-
                                 background: `
-                                    radial-gradient(
-                                            circle at top right,
-                                            rgba(255,255,255,0.18),
-                                            transparent 30%
-                                        ),
-                                    linear-gradient(
-                                            135deg,
-                                            #5E1014 0%,
-                                            #7F1D1D 35%,
-                                            #991B1B 65%,
-                                            #DC2626 100%
-                                        )
-                                `,       
+      radial-gradient(
+        circle at top right,
+        rgba(255,255,255,0.18),
+        transparent 30%
+      ),
+      linear-gradient(
+        135deg,
+        #5E1014 0%,
+        #7F1D1D 35%,
+        #991B1B 65%,
+        #DC2626 100%
+      )
+    `,
                             }}
                         >
                             {/* TOP */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                    justifyContent: "space-between",
-                                    marginBottom: "16px",
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "6px",
-
-                                        padding: "6px 12px",
-
-                                        borderRadius: "999px",
-
-                                        background: "rgba(255,255,255,0.12)",
-
-                                        backdropFilter: "blur(10px)",
-
-                                        border: "1px solid rgba(255,255,255,0.10)",
-
-                                        color: "#ffffff",
-
-                                        fontSize: "11px",
-                                        fontWeight: 500,
-                                    }}
-                                >
+                            <div className="mb-4 flex items-start justify-between">
+                                <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/12 px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-[10px]">
                                     {style.icon}
-
                                     <span>{ticket.issueType}</span>
                                 </div>
 
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "4px",
-
-                                        color: "rgba(255,255,255,0.70)",
-
-                                        fontSize: "11px",
-                                    }}
-                                >
+                                <div className="flex items-center gap-1 text-[11px] text-white/70">
                                     <Clock3 size={11} />
-
-                                    <span>
-                                        {formatTimeAgo(ticket.createdAt)}
-                                    </span>
+                                    <span>{formatTimeAgo(ticket.createdAt)}</span>
                                 </div>
                             </div>
 
                             {/* PROJECT */}
-                            <h3
-                                style={{
-                                    fontSize: "18px",
-                                    fontWeight: 600,
-
-                                    color: "#ffffff",
-
-                                    lineHeight: 1.3,
-
-                                    marginBottom: "8px",
-                                }}
-                            >
+                            <h3 className="mb-2 text-[18px] font-semibold leading-[1.3] text-white">
                                 {ticket.projectTitle}
                             </h3>
 
                             {/* DESCRIPTION */}
-                            <p
-                                style={{
-                                    fontSize: "13px",
-
-                                    lineHeight: 1.6,
-
-                                    color: "rgba(255,255,255,0.75)",
-
-                                    marginBottom: "20px",
-                                }}
-                            >
+                            <p className="mb-5 text-[13px] leading-[1.6] text-white/75">
                                 {ticket.description}
                             </p>
 
                             {/* FOOTER */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "flex-end",
-                                    justifyContent: "space-between",
-                                }}
-                            >
+                            <div className="flex items-end justify-between">
                                 <div>
-                                    <p
-                                        style={{
-                                            fontSize: "11px",
-
-                                            color: "rgba(255,255,255,0.50)",
-
-                                            marginBottom: "4px",
-                                        }}
-                                    >
+                                    <p className="mb-1 text-[11px] text-white/50">
                                         Raised by
                                     </p>
 
-                                    <p
-                                        style={{
-                                            fontSize: "14px",
-                                            fontWeight: 500,
-
-                                            color: "#ffffff",
-                                        }}
-                                    >
+                                    <p className="text-[14px] font-medium text-white">
                                         {ticket.raisedBy.name}
                                     </p>
                                 </div>
 
-                                <div
-                                    style={{
-                                        padding: "6px 12px",
-
-                                        borderRadius: "999px",
-
-                                        background: "#ffffff",
-
-                                        color: "#991B1B",
-
-                                        fontSize: "11px",
-                                        fontWeight: 600,
-
-                                        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                                    }}
-                                >
+                                <div className="rounded-full bg-white px-2 py-1 text-[11px] font-semibold text-red-800 shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
                                     {ticket.status}
                                 </div>
                             </div>

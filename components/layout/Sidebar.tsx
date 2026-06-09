@@ -11,7 +11,8 @@ import {
   FileUp,
   Handshake,
   Bug,
-  Paperclip
+  Paperclip,
+  Send
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -27,7 +28,7 @@ const ADMIN_NAV: NavItem[] = [
   { label: "Projects", icon: <FolderKanban size={20} />, href: "/admin/project" },
   { label: "Client Management", icon: <User size={20} />, href: "/admin/client-management" },
   { label: "Engineer Management", icon: <UserKeyIcon size={20} />, href: "/admin/engineer-management" },
-  { label: "Invitations Management", icon: <UserKeyIcon size={20} />, href: "/admin/invitations-management" },
+  { label: "Invitations Management", icon: <Send size={20} />, href: "/admin/invitations-management" },
   // { label: "Payment", icon: <CreditCard size={20} />, href: "/admin/payment" },
   // { label: "Customers", icon: <Users size={20} />, href: "/admin/customers" },
   { label: "Message", icon: <MessageSquare size={20} />, href: "/admin/message" },
@@ -60,7 +61,7 @@ const NavLink = ({ item, collapsed }: { item: NavItem; collapsed: boolean }) => 
       href={item.href}
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
           ${isActive
-          ? "bg-[#FFAE58] text-white shadow-sm font-semibold text-[17px]"
+          ? "bg-[#FFAE58] text-white shadow-sm font-semibold text-[15px]"
           : "text-gray-500 hover:bg-[#fff4e6] hover:text-[#FFAE58] text-[15px]"
         }`}
     >

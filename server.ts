@@ -5,6 +5,7 @@ import next from "next";
 import { Server } from "socket.io";
 import registerDirectChatHandlers from "./socket/directChatHandler";
 import registerProjectChatHandlers from "./socket/projectChatHandler";
+import { startInvitationExpiryJob } from "./lib/invitationExpiry";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -16,6 +17,7 @@ const handle = app.getRequestHandler();
 const onlineUsers = new Map<string, Set<string>>();
 
 app.prepare().then(() => {
+  startInvitationExpiryJob();
   const httpServer = createServer((req, res) => {
     const parsedUrl = parse(req.url!, true);
     handle(req, res, parsedUrl);
@@ -26,12 +28,12 @@ app.prepare().then(() => {
   });
 
   io.on("connection", (socket) => {
-    
+
     socket.on("user_connected", (userId: string) => {
       if (!onlineUsers.has(userId)) {
         onlineUsers.set(userId, new Set());
       }
-      
+
       const userSockets = onlineUsers.get(userId)!;
       userSockets.add(socket.id);
 
@@ -47,12 +49,12 @@ app.prepare().then(() => {
 
     socket.on("check_multiple_users_status", (userIds: string[]) => {
       if (!Array.isArray(userIds)) return;
-      
+
       const statuses: Record<string, boolean> = {};
       userIds.forEach((id) => {
         statuses[id] = onlineUsers.has(id) && onlineUsers.get(id)!.size > 0;
       });
-      
+
       socket.emit("multiple_users_status_result", statuses);
     });
 
@@ -62,8 +64,8 @@ app.prepare().then(() => {
     socket.on("disconnect", () => {
       for (const [userId, socketIds] of onlineUsers.entries()) {
         if (socketIds.has(socket.id)) {
-          socketIds.delete(socket.id); 
-          
+          socketIds.delete(socket.id);
+
           if (socketIds.size === 0) {
             onlineUsers.delete(userId);
             io.emit("user_status_change", { userId, isOnline: false });

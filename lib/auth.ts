@@ -17,9 +17,9 @@ export async function getUser() {
     return { user: null, error: "User not found" };
   }
 
-  if (!user.emailVerified){
-    return { user: null, error: "Please verify your email first" };
-  }
+  //   if (!user.emailVerified){
+  //   return { user: null, error: "Please verify your email first" };
+  // }
 
   if (user.isSuspended) {
     return { user: null, error: "Your account has been suspended by the administrator" };

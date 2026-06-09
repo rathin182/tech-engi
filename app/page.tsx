@@ -8,7 +8,7 @@ import WhatWeOffer from "@/components/WhatWeOffer";
 
 export default function Home() {
   return (
-    <div>
+    <div className="">
       <Start />
       <HowItWorks />
       <WhatWeOffer />

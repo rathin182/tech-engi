@@ -96,7 +96,7 @@ export default function EngineerPayoutPage() {
   return (
     <DashboardShell>
       <div className="space-y-6 p-1">
-        <h1 className="text-2xl font-bold " style={{ color: "var(--text-primary)" }}>
+        <h1 className="text-2xl font-semibold " style={{ color: "var(--text-primary)" }}>
           My Payouts
         </h1>
 
@@ -177,7 +177,7 @@ export default function EngineerPayoutPage() {
         {/* Payout History */}
         <div className="bg-white rounded-xl border border-[var(--border)]">
           <div className="p-5 border-b border-[var(--border)]">
-            <h2 className="text-lg font-bold " style={{ color: "var(--text-primary)" }}>
+            <h2 className="text-lg font-semibold " style={{ color: "var(--text-primary)" }}>
               Payout History
             </h2>
             <p className="text-sm  mt-0.5" style={{ color: "var(--text-muted)" }}>

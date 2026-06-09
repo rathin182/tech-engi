@@ -26,7 +26,7 @@ const HowItWorks = () => {
     const cardsRef = useScrollAnimation('fadeUp')
 
     return (
-        <section className="w-full bg-white py-20 px-6">
+        <section className="w-full px-6">
             <div className="w-full">
                 {/* Header */}
                 <div ref={headerRef} className="text-center space-y-1 mb-16">
@@ -44,23 +44,7 @@ const HowItWorks = () => {
                 {/* Cards Grid */}
                 <div
   ref={cardsRef}
-  className="
-    grid
-    grid-cols-1
-    sm:grid-cols-2
-    xl:grid-cols-3
-
-    gap-y-16
-    gap-x-8
-    lg:gap-x-12
-    xl:gap-x-20
-
-    px-4
-    sm:px-6
-    lg:px-10
-    xl:px-15
-  "
->
+  className=" grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-16 gap-x-8 lg:gap-x-12 xl:gap-x-20 px-4 sm:px-6 lg:px-10 xl:px-15">
   {steps.map((step, index) => {
     const Icon = step.icon
 
@@ -79,20 +63,14 @@ const HowItWorks = () => {
         <div
           className="
             absolute
-
             left-[-16px]
             right-[-16px]
-
             sm:left-[-20px]
             sm:right-[-20px]
-
             top-[140px]
-
             h-[220px]
-
             rounded-3xl
             bg-[#FFAE58]
-
             z-0
           "
         />
@@ -127,20 +105,15 @@ const HowItWorks = () => {
               <div
                 className="
                   absolute
-
                   left-1/2
                   top-1/2
-
                   -translate-x-1/2
                   -translate-y-1/2
-
                   w-24
                   h-24
-
                   bg-gradient-to-b
                   from-[#FFB05F]
                   to-[#FF8400]
-
                   rounded-2xl
                   blur-lg
                   opacity-40
@@ -151,16 +124,12 @@ const HowItWorks = () => {
               <div
                 className="
                   relative
-
                   w-20
                   h-20
-
                   bg-gradient-to-b
                   from-[#FFB05F]
                   to-[#FF8400]
-
                   rounded-2xl
-
                   flex
                   items-center
                   justify-center
@@ -180,12 +149,10 @@ const HowItWorks = () => {
             className="
               mt-10
               sm:mt-12
-
               flex
               flex-col
               items-center
               text-center
-
               space-y-4
             "
           >
@@ -193,7 +160,6 @@ const HowItWorks = () => {
               className="
                 text-[18px]
                 sm:text-[20px]
-
                 font-semibold
                 text-slate-950
               "
@@ -204,10 +170,8 @@ const HowItWorks = () => {
             <p
               className="
                 text-slate-500
-
                 text-[15px]
                 sm:text-[17px]
-
                 font-medium
                 leading-relaxed
               "

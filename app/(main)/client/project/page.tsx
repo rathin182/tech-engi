@@ -68,7 +68,7 @@ export default function ClientProjectsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold  text-[var(--text-primary)]">
+            <h1 className="text-2xl font-semibold  text-[var(--text-primary)]">
               My Projects
             </h1>
             <p className="text-xs  text-[var(--text-muted)] mt-0.5">

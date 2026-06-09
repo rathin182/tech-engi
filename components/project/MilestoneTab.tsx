@@ -796,7 +796,7 @@ export default function MilestoneTab({ projectId }: any) {
               {/* TYPE */}
               <div>
                 <label className="block text-sm font-medium  mb-1.5">
-                  Type *
+                  Type
                 </label>
                 <select
                   className={inputCls}

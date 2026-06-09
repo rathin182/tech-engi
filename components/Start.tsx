@@ -22,54 +22,22 @@ const Start = () => {
       .fromTo(bannerRef.current, { scaleY: 0.8, opacity: 0, transformOrigin: "top" }, { scaleY: 1, opacity: 1, duration: 0.7 }, "-=0.3");
   }, []);
   return (
-    <div className="min-h-screen p-5 bg-white font-sans">
+    <div className="min-h-screen p-5 font-sans">
       {/* Navbar */}
       <header className="border-2 border-gray-200 overflow-hidden">
         <div
-          className="
-          max-w-full
-          mx-auto
-          px-4
-          sm:px-6
-          h-[64px]
-
-          flex
-          items-center
-          justify-between
-        "
-        >
+          className=" max-w-full mx-auto px-4 sm:px-6 h-[64p flex items-center justify-between " >
           {/* LEFT */}
           <div className="flex items-center">
             {/* LOGO */}
             <span
-              className="
-              text-[22px]
-              font-benz
-              tracking-tight
-              text-black
-
-              lg:mr-4
-              lg:border-r-2
-              lg:border-gray-300
-              lg:pr-4
-            "
-            >
+              className=" text-[22px] font-benz tracking-tight text-black lg:mr-4 lg:border-r-2 lg:border-gray-300 lg:pr-4 " >
               TECH ENGI
             </span>
 
             {/* DESKTOP NAV */}
             <nav
-              className="
-              hidden
-              lg:flex
-              items-center
-              gap-8
-
-              font-id
-              text-[14px]
-              text-black
-            "
-            >
+              className=" hidden lg:flex items-center gap-8 font-id text-[14px] text-black " >
               <a href="#">How it works?</a>
               <a href="#">Explore Projects</a>
               <a href="#">Blogs</a>
@@ -83,16 +51,7 @@ const Start = () => {
           >
             {/* SOCIAL */}
             <div
-              className="
-              flex
-              items-center
-              gap-4
-
-              border-r
-              border-gray-200
-              pr-5
-            "
-            >
+              className=" flex items-center gap-4 border-r border-gray-200 pr-5 " >
               {/* LinkedIn */}
               <a href="#" aria-label="LinkedIn">
                 <svg
@@ -318,7 +277,7 @@ const Start = () => {
         </div>
 
         {/* Orange Banner */}
-        <div className="relative min-h-[320px] lg:min-h-[418px]">
+        <div className="relative min-h-[420px] lg:min-h-137.5">
 
           {/* Background rounded layer */}
           <div className="absolute inset-0 rounded-2xl bg-[#FFAE58]" />
@@ -329,15 +288,15 @@ const Start = () => {
             className="hidden lg:block absolute -translate-x-1/2"
             style={{
               bottom: 0,
-              width: "min(850px, 58vw)",/* ✅ shrinks proportionally, never overflows */
+              width: "min(1030px, 60vw)",/* ✅ shrinks proportionally, never overflows */
               left: "calc(30% + 80px)",
             }}
           >
             <Image
               src="/two-guys.png"
               alt="Student and builder shaking hands"
-              width={560}
-              height={480}
+              width={600}
+              height={500}
               className="w-full h-auto object-contain "
               priority
             />
